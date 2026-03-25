@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'resend-ecommerce',
+  title: 'Resende Ecommerce',
   description:
     'Open-source starter kit for e-commerce transactional emails with Resend',
 };
@@ -14,7 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <header className="w-full border-b border-zinc-200 p-4 flex items-center justify-center">
+          <h1 className='font-bold text-xl'>resend-ecommerce</h1>
+        </header>
+        {children}
+      </body>
     </html>
   );
 }
