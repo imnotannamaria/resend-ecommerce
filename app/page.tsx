@@ -8,7 +8,7 @@ export default async function Home() {
         Open-source starter kit for e-commerce transactional emails with Resend
       </p>
       <div className="flex items-center gap-2">
-        <Link href="/orders" className="cursor-pointer bg-red-900 text-red-200 p-2 rounded hover:text-red-300">
+        <Link href="/orders/created" className="cursor-pointer bg-red-900 text-red-200 p-2 rounded hover:text-red-300">
           <p>Order Created</p>
         </Link>
         <p>{'>'}</p>
