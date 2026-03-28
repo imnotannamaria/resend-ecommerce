@@ -25,6 +25,7 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/themes": "^3.3.0",
     "@tailwindcss/postcss": "^4.2.2",
     "drizzle-orm": "^0.45.1",
     "hono": "^4.12.9",
