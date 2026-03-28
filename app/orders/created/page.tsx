@@ -1,27 +1,30 @@
-import Image from "next/image"
+"use client"
 
-interface Variables {
-  customer_name: string
-  delivery_date: Date
-  order_id: string
-  order_name: string
-  order_quantity: number
-  order_single_price: number
-  order_price: number
-  order_image: string
-}
+import Image from "next/image"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+
+const variablesSchema = z.object({
+  customer_name: z.string().min(1, "Required"),
+  delivery_date: z.string().min(1, "Required"),
+  order_id: z.string().min(1, "Required"),
+  order_name: z.string().min(1, "Required"),
+  order_quantity: z.string().min(1, "Required"),
+  order_single_price: z.string().min(1, "Required"),
+  order_price: z.string().min(1, "Required"),
+  order_image: z.url("Must be a valid URL"),
+})
+
+type Variables = z.infer<typeof variablesSchema>
 
 export default function CreatedOrder() {
-  const variables: Variables  = {
-    "customer_name": "Anna",
-    "delivery_date": new Date(),
-    "order_id": "23232-323232",
-    "order_name": "Pop Funko",
-    "order_quantity": 2,
-    "order_price": 120,
-    "order_single_price": 240,
-    "order_image": "https://images.unsplash.com/photo-1607134286392-1726f8cca84e?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-  }
+  const { register, watch, formState: { errors } } = useForm<Variables>({
+    resolver: zodResolver(variablesSchema),
+  })
+
+  const variables = watch()
+
   return (
     <div className="p-2 flex flex-col gap-4">
       <div className='flex gap-4 justify-end'>
@@ -31,23 +34,66 @@ export default function CreatedOrder() {
 
       <div className="grid grid-cols-[1fr_4fr_1fr] gap-4">
         <div className="w-full p-2 border border-zinc-200">
-          variables
+          <form className="flex flex-col gap-2">
+            <div>
+              <label className="font-bold">Customer name</label>
+              <input {...register("customer_name")} />
+              {errors.customer_name && <span>{errors.customer_name.message}</span>}
+            </div>
+            <div>
+              <label  className="font-bold">Delivery date</label>
+              <input type="date" {...register("delivery_date")} />
+              {errors.delivery_date && <span>{errors.delivery_date.message}</span>}
+            </div>
+            <div>
+              <label  className="font-bold">Order ID</label>
+              <input {...register("order_id")} />
+              {errors.order_id && <span>{errors.order_id.message}</span>}
+            </div>
+            <div>
+              <label  className="font-bold">Order name</label>
+              <input {...register("order_name")} />
+              {errors.order_name && <span>{errors.order_name.message}</span>}
+            </div>
+            <div>
+              <label  className="font-bold">Quantity</label>
+              <input type="number" {...register("order_quantity")} />
+              {errors.order_quantity && <span>{errors.order_quantity.message}</span>}
+            </div>
+            <div>
+              <label  className="font-bold">Unit price</label>
+              <input type="number" {...register("order_single_price")} />
+              {errors.order_single_price && <span>{errors.order_single_price.message}</span>}
+            </div>
+            <div>
+              <label  className="font-bold">Total price</label>
+              <input type="number" {...register("order_price")} />
+              {errors.order_price && <span>{errors.order_price.message}</span>}
+            </div>
+            <div>
+              <label  className="font-bold">Image URL</label>
+              <input {...register("order_image")} />
+              {errors.order_image && <span>{errors.order_image.message}</span>}
+            </div>
+          </form>
         </div>
 
         <div className="w-full p-2 border border-zinc-200">
           <p>Thank you for your order, {variables.customer_name}!</p>
 
-          <p>Your order has been placed and arrives on {variables.delivery_date.toLocaleDateString()}</p>
+          <p>Your order has been placed and arrives on {variables.delivery_date}</p>
 
           <p>Order number: {variables.order_id}</p>
 
           <div className="flex justify-between items-center">
-            <Image alt="Pop funko" src={variables.order_image} width={100} height={50}/>
+            {variables.order_image && (
+              <Image alt="Order product" src={variables.order_image} width={100} height={50} />
+            )}
 
             <div>
               <p>{variables.order_name}</p>
-              <p>{variables.order_quantity}</p>
-              <p>{variables.order_price}</p>
+              <p>Qty: {variables.order_quantity}</p>
+              <p>Unit: {variables.order_single_price}</p>
             </div>
           </div>
 
