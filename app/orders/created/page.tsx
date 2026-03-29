@@ -20,21 +20,29 @@ const variablesSchema = z.object({
 type Variables = z.infer<typeof variablesSchema>
 
 export default function CreatedOrder() {
-  const { register, watch, formState: { errors } } = useForm<Variables>({
+  const { register, watch, handleSubmit, formState: { errors, isSubmitting } } = useForm<Variables>({
     resolver: zodResolver(variablesSchema),
   })
 
   const variables = watch()
 
+  async function onSend(data: Variables) {
+    await fetch('/api/orders/created/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+  }
+
   return (
     <div className="p-2 flex flex-col gap-4">
       <div className='flex gap-4 justify-end'>
         <Button>Copy</Button>
-        <Button>Send</Button>
+        <Button onClick={handleSubmit(onSend)} loading={isSubmitting}>Send</Button>
       </div>
 
       <div className="grid grid-cols-[1fr_4fr_1fr] gap-4">
-        <div className="w-full p-2 border border-zinc-200">
+        <div className="w-full p-2">
           <form>
             <Flex direction="column" gap="3">
               <Flex direction="column" gap="1">
@@ -81,7 +89,7 @@ export default function CreatedOrder() {
           </form>
         </div>
 
-        <div className="w-full p-2 border border-zinc-200">
+        <div className="w-full p-2">
           <p>Thank you for your order, {variables.customer_name}!</p>
 
           <p>Your order has been placed and arrives on {variables.delivery_date}</p>
@@ -103,7 +111,7 @@ export default function CreatedOrder() {
           <p>Total: {variables.order_price}</p>
         </div>
 
-        <div className="w-full p-2 border border-zinc-200">
+        <div className="w-full p-2">
           design changes
         </div>
       </div>

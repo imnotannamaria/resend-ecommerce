@@ -11,7 +11,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   return (
     <Theme appearance={appearance}>
-      <header className="w-full border-b border-zinc-200 p-4 flex items-center justify-between">
+      <header className="w-full bg-zinc-900 p-4 flex items-center justify-between">
         <div className="flex-1" />
         <Link href="/" className="font-bold text-xl">resend-ecommerce</Link>
         <div className="flex-1 flex justify-end">
