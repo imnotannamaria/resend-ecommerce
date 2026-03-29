@@ -29,6 +29,7 @@
     "@tailwindcss/postcss": "^4.2.2",
     "drizzle-orm": "^0.45.1",
     "hono": "^4.12.9",
+    "lucide-react": "^1.7.0",
     "next": "15.5.2",
     "postgres": "^3.4.8",
     "react": "19.1.0",

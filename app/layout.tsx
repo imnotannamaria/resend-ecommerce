@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { Theme } from '@radix-ui/themes';
 import '@radix-ui/themes/styles.css';
 import './globals.css';
+import ThemeProvider from './theme-provider';
 
 export const metadata: Metadata = {
   title: 'Resende Ecommerce',
@@ -17,12 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Theme>
-          <header className="w-full border-b border-zinc-200 p-4 flex items-center justify-center">
-            <h1 className='font-bold text-xl'>resend-ecommerce</h1>
-          </header>
+        <ThemeProvider>
           {children}
-        </Theme>
+        </ThemeProvider>
       </body>
     </html>
   );
