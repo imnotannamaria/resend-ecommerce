@@ -8,6 +8,12 @@ import { OrderCreatedEmail } from '@/app/emails/order-created';
 const app = new Hono().basePath('/api');
 const resend = new Resend(env.RESEND_API_KEY);
 
+app.post('/orders/created/html', async (c) => {
+  const body = await c.req.json();
+  const html = await render(OrderCreatedEmail(body));
+  return c.json({ html });
+});
+
 app.post('/orders/created/send', async (c) => {
   const body = await c.req.json();
 

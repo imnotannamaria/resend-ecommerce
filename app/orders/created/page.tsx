@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button, Flex, Tabs, Text, TextField } from "@radix-ui/themes"
-import { Check, Calendar } from "lucide-react"
+import { Check, Calendar, Copy, SendHorizontal } from "lucide-react"
 
 const optionalUrl = z.union([z.url(), z.literal("")]).optional()
 
@@ -69,6 +69,16 @@ export default function CreatedOrder() {
     )
   }
 
+  async function onCopy() {
+    const res = await fetch('/api/orders/created/html', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(variables),
+    })
+    const { html } = await res.json()
+    await navigator.clipboard.writeText(html)
+  }
+
   async function onSend(data: Variables) {
     await fetch('/api/orders/created/send', {
       method: 'POST',
@@ -79,16 +89,22 @@ export default function CreatedOrder() {
 
   return (
     <div className="p-2 flex flex-col gap-4">
-      <div className="flex gap-4 justify-end">
-        <Button>Copy</Button>
-        <Button onClick={handleSubmit(onSend)} loading={isSubmitting}>Send</Button>
+      <div className="flex gap-2 justify-end">
+        <Button variant="soft" color="gray" highContrast onClick={onCopy}>
+          <Copy size={14} />
+          Copy
+        </Button>
+        <Button variant="solid" color="gray" highContrast onClick={handleSubmit(onSend)} loading={isSubmitting}>
+          <SendHorizontal size={14} />
+          Send
+        </Button>
       </div>
 
       <div className="grid grid-cols-[1fr_4fr_1fr] gap-4">
 
         <div className="w-full">
           <Tabs.Root defaultValue="brand">
-            <Tabs.List size="1" className="w-full">
+            <Tabs.List size="2" className="w-full">
               <Tabs.Trigger value="brand" className="flex-1 justify-center">Brand</Tabs.Trigger>
               <Tabs.Trigger value="order" className="flex-1 justify-center">Order</Tabs.Trigger>
             </Tabs.List>

@@ -17,10 +17,11 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         <div className="flex-1 flex justify-end">
           <IconButton
             variant="ghost"
-            color="indigo"
+            color="gray"
+            highContrast
             onClick={() => setAppearance(appearance === "dark" ? "light" : "dark")}
           >
-            {appearance === "dark" ? <Sun /> : <Moon />}
+            {appearance === "dark" ? <Sun size={16} /> : <Moon size={16} />}
           </IconButton>
         </div>
       </header>
