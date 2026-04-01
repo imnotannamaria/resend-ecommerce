@@ -12,6 +12,8 @@ interface OrderCreatedEmailProps {
   order_single_price: string
   order_price: string
   order_image?: string
+  accent_color?: string
+  radius?: "sharp" | "medium" | "large"
 }
 
 function formatDate(value: string | undefined) {
@@ -20,6 +22,9 @@ function formatDate(value: string | undefined) {
   return new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" })
     .format(new Date(year, month - 1, day))
 }
+
+const radiusMap = { sharp: "0px", medium: "8px", large: "16px" }
+const radiusInnerMap = { sharp: "0px", medium: "6px", large: "10px" }
 
 export function OrderCreatedEmail({
   company_name,
@@ -35,19 +40,23 @@ export function OrderCreatedEmail({
   order_single_price,
   order_price,
   order_image,
+  accent_color = "#18181b",
+  radius = "medium",
 }: OrderCreatedEmailProps) {
   const hasSocial = facebook_url || twitter_url || instagram_url
+  const r = radiusMap[radius]
+  const ri = radiusInnerMap[radius]
 
   return (
-    <div style={{ fontFamily: "sans-serif", fontSize: "14px", color: "#3f3f46", maxWidth: "600px", margin: "0 auto", backgroundColor: "#ffffff", border: "1px solid #e4e4e7", borderRadius: "8px", overflow: "hidden" }}>
+    <div style={{ fontFamily: "sans-serif", fontSize: "14px", color: "#3f3f46", maxWidth: "600px", margin: "0 auto", backgroundColor: "#ffffff", border: "1px solid #e4e4e7", borderRadius: r, overflow: "hidden" }}>
 
-      <div style={{ height: "4px", backgroundColor: "#18181b" }} />
+      <div style={{ height: "4px", backgroundColor: accent_color }} />
 
       <div style={{ padding: "40px 48px 32px", textAlign: "center", borderBottom: "1px solid #f4f4f5" }}>
-        <div style={{ display: "inline-block", width: "48px", height: "48px", lineHeight: "48px", borderRadius: "50%", backgroundColor: "#18181b", marginBottom: "20px", fontSize: "22px", color: "white", textAlign: "center" }}>
+        <div style={{ display: "inline-block", width: "48px", height: "48px", lineHeight: "48px", borderRadius: "50%", backgroundColor: accent_color, marginBottom: "20px", fontSize: "22px", color: "white", textAlign: "center" }}>
           ✓
         </div>
-        <h1 style={{ fontSize: "24px", fontWeight: "700", color: "#18181b", margin: "0 0 8px", letterSpacing: "-0.025em" }}>Order confirmed</h1>
+        <h1 style={{ fontSize: "24px", fontWeight: "700", color: accent_color, margin: "0 0 8px", letterSpacing: "-0.025em" }}>Order confirmed</h1>
         <p style={{ fontSize: "11px", color: "#a1a1aa", letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: "500", margin: 0 }}>
           Order #{order_id}
         </p>
@@ -61,7 +70,7 @@ export function OrderCreatedEmail({
           Thank you for your order. We've received it and will send a shipping notification once your items are on the way.
         </p>
 
-        <div style={{ backgroundColor: "#fafafa", border: "1px solid #f4f4f5", borderRadius: "8px", padding: "16px 20px", marginBottom: "32px" }}>
+        <div style={{ backgroundColor: "#fafafa", border: "1px solid #f4f4f5", borderRadius: ri, padding: "16px 20px", marginBottom: "32px" }}>
           <p style={{ fontSize: "11px", fontWeight: "600", color: "#71717a", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 2px" }}>Expected delivery</p>
           <p style={{ color: "#27272a", fontWeight: "500", margin: 0 }}>{formatDate(delivery_date)}</p>
         </div>
@@ -78,10 +87,10 @@ export function OrderCreatedEmail({
                     src={order_image}
                     width={64}
                     height={64}
-                    style={{ borderRadius: "6px", objectFit: "cover", border: "1px solid #f4f4f5", display: "block" }}
+                    style={{ borderRadius: ri, objectFit: "cover", border: "1px solid #f4f4f5", display: "block" }}
                   />
                 ) : (
-                  <div style={{ width: "64px", height: "64px", borderRadius: "6px", backgroundColor: "#f4f4f5", border: "1px solid #e4e4e7", textAlign: "center", lineHeight: "64px", color: "#d4d4d8", fontSize: "11px", fontFamily: "monospace" }}>
+                  <div style={{ width: "64px", height: "64px", borderRadius: ri, backgroundColor: "#f4f4f5", border: "1px solid #e4e4e7", textAlign: "center", lineHeight: "64px", color: "#d4d4d8", fontSize: "11px", fontFamily: "monospace" }}>
                     IMG
                   </div>
                 )}
@@ -114,7 +123,7 @@ export function OrderCreatedEmail({
       <div style={{ padding: "32px 48px 40px", borderTop: "1px solid #f4f4f5" }}>
         <p style={{ color: "#71717a", fontSize: "14px", lineHeight: "1.625", margin: "0 0 20px" }}>
           Questions about your order? Reply to this email or visit our{" "}
-          <a href="#" style={{ color: "#18181b", textDecoration: "underline", textUnderlineOffset: "2px" }}>Help Center</a>.
+          <a href="#" style={{ color: accent_color, textDecoration: "underline", textUnderlineOffset: "2px" }}>Help Center</a>.
         </p>
         <p style={{ color: "#27272a", fontWeight: "500", margin: 0 }}>{company_name}</p>
       </div>
@@ -126,7 +135,7 @@ export function OrderCreatedEmail({
               <td style={{ verticalAlign: "middle" }}>
                 <p style={{ fontSize: "12px", color: "#a1a1aa", lineHeight: "1.625", margin: 0 }}>
                   You received this email because you placed an order.{" "}
-                  <a href={unsubscribe_url} style={{ textDecoration: "underline", textUnderlineOffset: "2px", color: "#a1a1aa" }}>
+                  <a href={unsubscribe_url} style={{ textDecoration: "underline", textUnderlineOffset: "2px", color: accent_color }}>
                     Unsubscribe
                   </a>
                 </p>

@@ -4,9 +4,33 @@ import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Button, Flex, Tabs, Text, TextField } from "@radix-ui/themes"
-import { Check, Calendar, Copy, SendHorizontal } from "lucide-react"
+import { Button, Flex, IconButton, Tabs, Text, TextField } from "@radix-ui/themes"
+import { Check, Calendar, Copy, SendHorizontal, Square, SquareDashed, Circle } from "lucide-react"
 import { toast } from "sonner"
+import { useState, type CSSProperties } from "react"
+
+type Radius = "sharp" | "medium" | "large"
+type Design = { accentColor: string; radius: Radius }
+
+const ACCENT_PRESETS = [
+  { label: "Zinc",   value: "#18181b" },
+  { label: "Blue",   value: "#2563eb" },
+  { label: "Green",  value: "#16a34a" },
+  { label: "Indigo", value: "#4f46e5" },
+  { label: "Orange", value: "#ea580c" },
+  { label: "Red",    value: "#dc2626" },
+]
+
+const RADIUS_OPTIONS: { label: string; value: Radius }[] = [
+  { label: "Sharp",  value: "sharp"  },
+  { label: "Medium", value: "medium" },
+  { label: "Large",  value: "large"  },
+]
+
+const RADIUS_ICONS = { sharp: Square, medium: SquareDashed, large: Circle }
+
+const previewRadius = { sharp: "rounded-none", medium: "rounded-lg", large: "rounded-2xl" }
+const previewInnerRadius = { sharp: "rounded-none", medium: "rounded-md", large: "rounded-xl" }
 
 const optionalUrl = z.union([z.url(), z.literal("")]).optional()
 
@@ -32,6 +56,8 @@ export default function CreatedOrder() {
   const { register, watch, handleSubmit, formState: { errors, isSubmitting } } = useForm<Variables>({
     resolver: zodResolver(variablesSchema),
   })
+
+  const [design, setDesign] = useState<Design>({ accentColor: "#18181b", radius: "medium" })
 
   const variables = watch()
 
@@ -75,7 +101,7 @@ export default function CreatedOrder() {
       const res = await fetch('/api/orders/created/html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(variables),
+        body: JSON.stringify({ ...variables, accent_color: design.accentColor, radius: design.radius }),
       })
       const { html } = await res.json()
       await navigator.clipboard.writeText(html)
@@ -90,7 +116,7 @@ export default function CreatedOrder() {
       const res = await fetch('/api/orders/created/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, accent_color: design.accentColor, radius: design.radius }),
       })
       if (!res.ok) throw new Error()
       toast.success('Email sent successfully')
@@ -100,7 +126,7 @@ export default function CreatedOrder() {
   }
 
   return (
-    <div className="p-2 flex flex-col gap-4">
+    <div className="p-2 flex flex-col gap-4" style={{ "--accent": design.accentColor } as CSSProperties}>
       <div className="flex gap-2 justify-end">
         <Button variant="soft" color="gray" highContrast onClick={onCopy}>
           <Copy size={14} />
@@ -199,15 +225,15 @@ export default function CreatedOrder() {
         </div>
 
         <div className="w-full">
-          <div className="max-w-150 mx-auto bg-white border border-zinc-200 rounded-lg overflow-hidden font-sans text-sm text-zinc-800">
+          <div className={`max-w-150 mx-auto bg-white border border-zinc-200 overflow-hidden font-sans text-sm text-zinc-800 ${previewRadius[design.radius]}`}>
 
-            <div className="h-1 bg-zinc-900" />
+            <div className="h-1 bg-(--accent)" />
 
             <div className="px-12 pt-10 pb-8 text-center border-b border-zinc-100">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-zinc-900 mb-5">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-5 bg-(--accent)">
                 <Check size={20} stroke="white" strokeWidth={2.5} />
               </div>
-              <h1 className="text-2xl font-bold text-zinc-900 mb-2 tracking-tight">Order confirmed</h1>
+              <h1 className="text-2xl font-bold mb-2 tracking-tight text-(--accent)">Order confirmed</h1>
               <p className="text-zinc-400 text-xs tracking-widest uppercase font-medium">
                 Order #{ph(v.order_id)}
               </p>
@@ -221,7 +247,7 @@ export default function CreatedOrder() {
                 Thank you for your order. We've received it and will send a shipping notification once your items are on the way.
               </p>
 
-              <div className="flex items-start gap-3 bg-zinc-50 border border-zinc-100 rounded-lg px-5 py-4 mb-8">
+              <div className={`flex items-start gap-3 bg-zinc-50 border border-zinc-100 px-5 py-4 mb-8 ${previewInnerRadius[design.radius]}`}>
                 <Calendar size={16} className="mt-0.5 shrink-0 text-zinc-500" />
                 <div>
                   <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-0.5">Expected delivery</p>
@@ -238,10 +264,10 @@ export default function CreatedOrder() {
                     src={v.order_image}
                     width={64}
                     height={64}
-                    className="rounded-md object-cover border border-zinc-100 shrink-0"
+                    className={`object-cover border border-zinc-100 shrink-0 ${previewInnerRadius[design.radius]}`}
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-md bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-300 text-xs shrink-0 font-mono">
+                  <div className={`w-16 h-16 bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-300 text-xs shrink-0 font-mono ${previewInnerRadius[design.radius]}`}>
                     IMG
                   </div>
                 )}
@@ -269,7 +295,7 @@ export default function CreatedOrder() {
             <div className="px-12 pb-10 border-t border-zinc-100 pt-8">
               <p className="text-zinc-500 text-sm leading-relaxed">
                 Questions about your order? Reply to this email or visit our{" "}
-                <a href="#" className="text-zinc-900 underline underline-offset-2">Help Center</a>.
+                <a href="#" className="underline underline-offset-2 text-(--accent)">Help Center</a>.
               </p>
               <p className="text-zinc-800 font-medium mt-5">
                 {ph(v.company_name)}
@@ -279,7 +305,7 @@ export default function CreatedOrder() {
             <div className="bg-zinc-50 border-t border-zinc-100 px-12 py-6 flex items-center justify-between gap-4">
               <p className="text-xs text-zinc-400 leading-relaxed">
                 You received this email because you placed an order.{" "}
-                <a href={v.unsubscribe_url} className="underline underline-offset-2 text-zinc-400">
+                <a href={v.unsubscribe_url} className="underline underline-offset-2 text-(--accent)">
                   Unsubscribe
                 </a>
               </p>
@@ -310,7 +336,55 @@ export default function CreatedOrder() {
           </div>
         </div>
 
-        <div className="w-full p-2" />
+        <div className="w-full flex flex-col gap-10 pt-1">
+          <div className="flex flex-col gap-4">
+            <Text size="1" weight="bold" className="uppercase tracking-widest text-(--gray-10)">Accent</Text>
+            <div className="flex flex-wrap gap-4">
+              {ACCENT_PRESETS.map(({ label, value }) => (
+                <IconButton
+                  key={value}
+                  title={label}
+                  variant="ghost"
+                  color="gray"
+                  onClick={() => setDesign(d => ({ ...d, accentColor: value }))}
+                  style={{ "--swatch": value } as CSSProperties}
+                  className={`w-6! h-6! rounded-full! bg-(--swatch)! ${design.accentColor === value ? "ring-2 ring-(--swatch) ring-offset-2" : ""}`}
+                />
+              ))}
+            </div>
+            <TextField.Root
+              size="1"
+              value={design.accentColor}
+              maxLength={7}
+              onChange={e => {
+                const val = e.target.value
+                if (/^#[0-9a-fA-F]{0,6}$/.test(val)) setDesign(d => ({ ...d, accentColor: val }))
+              }}
+            >
+              <TextField.Slot>
+                <div className="w-3 h-3 rounded-full border border-zinc-300 shrink-0 bg-(--accent)" />
+              </TextField.Slot>
+            </TextField.Root>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Text size="1" weight="bold" className="uppercase tracking-widest text-(--gray-10)">Radius</Text>
+            <Flex direction="column" gap="4">
+              {RADIUS_OPTIONS.map(({ label, value }) => {
+                const Icon = RADIUS_ICONS[value]
+                return (
+                  <Button
+                    key={value}
+                    onClick={() => setDesign(d => ({ ...d, radius: value }))}
+                  >
+                    <Icon size={14} />
+                    {label}
+                  </Button>
+                )
+              })}
+            </Flex>
+          </div>
+        </div>
       </div>
     </div>
   )
