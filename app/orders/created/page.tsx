@@ -4,13 +4,26 @@ import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Button, Flex, IconButton, SegmentedControl, Tabs, Text, TextField } from "@radix-ui/themes"
+import { Button, Flex, IconButton, SegmentedControl, Switch, Tabs, Text, TextField } from "@radix-ui/themes"
 import { Check, Calendar, Copy, SendHorizontal, Square, SquareDashed, Circle } from "lucide-react"
 import { toast } from "sonner"
 import { useState, type CSSProperties } from "react"
 
 type Radius = "sharp" | "medium" | "large"
-type Design = { accentColor: string; accentHex: string; radius: Radius }
+type Design = {
+  accentColor: string
+  accentHex: string
+  radius: Radius
+  showDelivery: boolean
+  showSignOff: boolean
+  showSocialLinks: boolean
+}
+
+const SECTIONS = [
+  { label: "Delivery date", key: "showDelivery"    },
+  { label: "Sign-off",      key: "showSignOff"      },
+  { label: "Social links",  key: "showSocialLinks"  },
+] as const
 
 const ACCENT_PRESETS = [
   { label: "Zinc",   value: "var(--color-zinc-900)",   hex: "#18181b" },
@@ -61,7 +74,11 @@ export default function CreatedOrder() {
     resolver: zodResolver(variablesSchema),
   })
 
-  const [design, setDesign] = useState<Design>({ accentColor: "var(--color-zinc-900)", accentHex: "#18181b", radius: "medium" })
+  const [design, setDesign] = useState<Design>({
+    accentColor: "var(--color-zinc-900)", accentHex: "#18181b",
+    radius: "medium",
+showDelivery: true, showSignOff: true, showSocialLinks: true,
+  })
 
   const variables = watch()
 
@@ -105,7 +122,7 @@ export default function CreatedOrder() {
       const res = await fetch('/api/orders/created/html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...variables, accent_color: design.accentHex, radius: design.radius }),
+        body: JSON.stringify({ ...variables, accent_color: design.accentHex, radius: design.radius, show_delivery: design.showDelivery, show_sign_off: design.showSignOff, show_social_links: design.showSocialLinks }),
       })
       const { html } = await res.json()
       await navigator.clipboard.writeText(html)
@@ -120,7 +137,7 @@ export default function CreatedOrder() {
       const res = await fetch('/api/orders/created/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, accent_color: design.accentHex, radius: design.radius }),
+        body: JSON.stringify({ ...data, accent_color: design.accentHex, radius: design.radius, show_delivery: design.showDelivery, show_sign_off: design.showSignOff, show_social_links: design.showSocialLinks }),
       })
       if (!res.ok) throw new Error()
       toast.success('Email sent successfully')
@@ -251,13 +268,15 @@ export default function CreatedOrder() {
                 Thank you for your order. We've received it and will send a shipping notification once your items are on the way.
               </p>
 
-              <div className={`flex items-start gap-3 bg-zinc-50 border border-zinc-100 px-5 py-4 mb-8 ${previewInnerRadius[design.radius]}`}>
-                <Calendar size={16} className="mt-0.5 shrink-0 text-zinc-500" />
-                <div>
-                  <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-0.5">Expected delivery</p>
-                  <p className="text-zinc-800 font-medium">{ph(v.delivery_date)}</p>
+              {design.showDelivery && (
+                <div className={`flex items-start gap-3 bg-zinc-50 border border-zinc-100 px-5 py-4 mb-8 ${previewInnerRadius[design.radius]}`}>
+                  <Calendar size={16} className="mt-0.5 shrink-0 text-zinc-500" />
+                  <div>
+                    <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-0.5">Expected delivery</p>
+                    <p className="text-zinc-800 font-medium">{ph(v.delivery_date)}</p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <p className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-4">Order summary</p>
 
@@ -296,15 +315,17 @@ export default function CreatedOrder() {
               </div>
             </div>
 
-            <div className="px-12 pb-10 border-t border-zinc-100 pt-8">
-              <p className="text-zinc-500 text-sm leading-relaxed">
-                Questions about your order? Reply to this email or visit our{" "}
-                <a href="#" className="underline underline-offset-2 text-(--accent)">Help Center</a>.
-              </p>
-              <p className="text-zinc-800 font-medium mt-5">
-                {ph(v.company_name)}
-              </p>
-            </div>
+            {design.showSignOff && (
+              <div className="px-12 pb-10 border-t border-zinc-100 pt-8">
+                <p className="text-zinc-500 text-sm leading-relaxed">
+                  Questions about your order? Reply to this email or visit our{" "}
+                  <a href="#" className="underline underline-offset-2 text-(--accent)">Help Center</a>.
+                </p>
+                <p className="text-zinc-800 font-medium mt-5">
+                  {ph(v.company_name)}
+                </p>
+              </div>
+            )}
 
             <div className="bg-zinc-50 border-t border-zinc-100 px-12 py-6 flex items-center justify-between gap-4">
               <p className="text-xs text-zinc-400 leading-relaxed">
@@ -314,7 +335,7 @@ export default function CreatedOrder() {
                 </a>
               </p>
 
-              {(v.facebook_url || v.twitter_url || v.instagram_url) && (
+              {design.showSocialLinks && (v.facebook_url || v.twitter_url || v.instagram_url) && (
                 <div className="flex gap-2 shrink-0">
                   {v.facebook_url && (
                     <a href={v.facebook_url} className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
@@ -369,6 +390,22 @@ export default function CreatedOrder() {
                 <div className="w-3 h-3 rounded-full border border-zinc-300 shrink-0 bg-(--accent)" />
               </TextField.Slot>
             </TextField.Root>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <Text size="1" weight="bold" className="uppercase tracking-widest text-(--gray-10)">Sections</Text>
+            <Flex direction="column" gap="3">
+              {SECTIONS.map(({ label, key }) => (
+                <Flex key={key} align="center" justify="between">
+                  <Text size="2">{label}</Text>
+                  <Switch
+                    size="1"
+                    checked={design[key]}
+                    onCheckedChange={v => setDesign(d => ({ ...d, [key]: v }))}
+                  />
+                </Flex>
+              ))}
+            </Flex>
           </div>
 
           <div className="flex flex-col gap-3">

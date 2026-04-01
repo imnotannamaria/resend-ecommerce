@@ -14,6 +14,10 @@ interface OrderCreatedEmailProps {
   order_image?: string
   accent_color?: string
   radius?: "sharp" | "medium" | "large"
+  bg_color?: string
+  show_delivery?: boolean
+  show_sign_off?: boolean
+  show_social_links?: boolean
 }
 
 function formatDate(value: string | undefined) {
@@ -42,13 +46,17 @@ export function OrderCreatedEmail({
   order_image,
   accent_color = "#18181b",
   radius = "medium",
+  bg_color = "#ffffff",
+  show_delivery = true,
+  show_sign_off = true,
+  show_social_links = true,
 }: OrderCreatedEmailProps) {
   const hasSocial = facebook_url || twitter_url || instagram_url
   const r = radiusMap[radius]
   const ri = radiusInnerMap[radius]
 
   return (
-    <div style={{ fontFamily: "sans-serif", fontSize: "14px", color: "#3f3f46", maxWidth: "600px", margin: "0 auto", backgroundColor: "#ffffff", border: "1px solid #e4e4e7", borderRadius: r, overflow: "hidden" }}>
+    <div style={{ fontFamily: "sans-serif", fontSize: "14px", color: "#3f3f46", maxWidth: "600px", margin: "0 auto", backgroundColor: bg_color, border: "1px solid #e4e4e7", borderRadius: r, overflow: "hidden" }}>
 
       <div style={{ height: "4px", backgroundColor: accent_color }} />
 
@@ -70,10 +78,12 @@ export function OrderCreatedEmail({
           Thank you for your order. We've received it and will send a shipping notification once your items are on the way.
         </p>
 
-        <div style={{ backgroundColor: "#fafafa", border: "1px solid #f4f4f5", borderRadius: ri, padding: "16px 20px", marginBottom: "32px" }}>
-          <p style={{ fontSize: "11px", fontWeight: "600", color: "#71717a", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 2px" }}>Expected delivery</p>
-          <p style={{ color: "#27272a", fontWeight: "500", margin: 0 }}>{formatDate(delivery_date)}</p>
-        </div>
+        {show_delivery && (
+          <div style={{ backgroundColor: "#fafafa", border: "1px solid #f4f4f5", borderRadius: ri, padding: "16px 20px", marginBottom: "32px" }}>
+            <p style={{ fontSize: "11px", fontWeight: "600", color: "#71717a", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 2px" }}>Expected delivery</p>
+            <p style={{ color: "#27272a", fontWeight: "500", margin: 0 }}>{formatDate(delivery_date)}</p>
+          </div>
+        )}
 
         <p style={{ fontSize: "11px", fontWeight: "600", color: "#a1a1aa", textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 16px" }}>Order summary</p>
 
@@ -120,13 +130,15 @@ export function OrderCreatedEmail({
         </table>
       </div>
 
-      <div style={{ padding: "32px 48px 40px", borderTop: "1px solid #f4f4f5" }}>
-        <p style={{ color: "#71717a", fontSize: "14px", lineHeight: "1.625", margin: "0 0 20px" }}>
-          Questions about your order? Reply to this email or visit our{" "}
-          <a href="#" style={{ color: accent_color, textDecoration: "underline", textUnderlineOffset: "2px" }}>Help Center</a>.
-        </p>
-        <p style={{ color: "#27272a", fontWeight: "500", margin: 0 }}>{company_name}</p>
-      </div>
+      {show_sign_off && (
+        <div style={{ padding: "32px 48px 40px", borderTop: "1px solid #f4f4f5" }}>
+          <p style={{ color: "#71717a", fontSize: "14px", lineHeight: "1.625", margin: "0 0 20px" }}>
+            Questions about your order? Reply to this email or visit our{" "}
+            <a href="#" style={{ color: accent_color, textDecoration: "underline", textUnderlineOffset: "2px" }}>Help Center</a>.
+          </p>
+          <p style={{ color: "#27272a", fontWeight: "500", margin: 0 }}>{company_name}</p>
+        </div>
+      )}
 
       <div style={{ backgroundColor: "#fafafa", borderTop: "1px solid #f4f4f5", padding: "24px 48px" }}>
         <table width="100%" cellPadding="0" cellSpacing="0">
@@ -140,7 +152,7 @@ export function OrderCreatedEmail({
                   </a>
                 </p>
               </td>
-              {hasSocial && (
+              {show_social_links && hasSocial && (
                 <td style={{ verticalAlign: "middle", textAlign: "right", whiteSpace: "nowrap" }}>
                   {facebook_url && (
                     <a href={facebook_url} style={{ display: "inline-block", width: "28px", height: "28px", lineHeight: "26px", borderRadius: "50%", border: "1px solid #e4e4e7", textAlign: "center", textDecoration: "none", marginLeft: "8px" }}>
