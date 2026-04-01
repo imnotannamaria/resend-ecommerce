@@ -4,21 +4,25 @@ import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Button, Flex, IconButton, Tabs, Text, TextField } from "@radix-ui/themes"
+import { Button, Flex, IconButton, SegmentedControl, Tabs, Text, TextField } from "@radix-ui/themes"
 import { Check, Calendar, Copy, SendHorizontal, Square, SquareDashed, Circle } from "lucide-react"
 import { toast } from "sonner"
 import { useState, type CSSProperties } from "react"
 
 type Radius = "sharp" | "medium" | "large"
-type Design = { accentColor: string; radius: Radius }
+type Design = { accentColor: string; accentHex: string; radius: Radius }
 
 const ACCENT_PRESETS = [
-  { label: "Zinc",   value: "#18181b" },
-  { label: "Blue",   value: "#2563eb" },
-  { label: "Green",  value: "#16a34a" },
-  { label: "Indigo", value: "#4f46e5" },
-  { label: "Orange", value: "#ea580c" },
-  { label: "Red",    value: "#dc2626" },
+  { label: "Zinc",   value: "var(--color-zinc-900)",   hex: "#18181b" },
+  { label: "Blue",   value: "var(--color-blue-600)",   hex: "#2563eb" },
+  { label: "Green",  value: "var(--color-green-600)",  hex: "#16a34a" },
+  { label: "Indigo", value: "var(--color-indigo-600)", hex: "#4f46e5" },
+  { label: "Orange", value: "var(--color-orange-500)", hex: "#f97316" },
+  { label: "Red",    value: "var(--color-red-600)",    hex: "#dc2626" },
+  { label: "Rose",   value: "var(--color-rose-500)",   hex: "#f43f5e" },
+  { label: "Teal",   value: "var(--color-teal-500)",   hex: "#14b8a6" },
+  { label: "Sky",    value: "var(--color-sky-500)",    hex: "#0ea5e9" },
+  { label: "Violet", value: "var(--color-violet-600)", hex: "#7c3aed" },
 ]
 
 const RADIUS_OPTIONS: { label: string; value: Radius }[] = [
@@ -57,7 +61,7 @@ export default function CreatedOrder() {
     resolver: zodResolver(variablesSchema),
   })
 
-  const [design, setDesign] = useState<Design>({ accentColor: "#18181b", radius: "medium" })
+  const [design, setDesign] = useState<Design>({ accentColor: "var(--color-zinc-900)", accentHex: "#18181b", radius: "medium" })
 
   const variables = watch()
 
@@ -101,7 +105,7 @@ export default function CreatedOrder() {
       const res = await fetch('/api/orders/created/html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...variables, accent_color: design.accentColor, radius: design.radius }),
+        body: JSON.stringify({ ...variables, accent_color: design.accentHex, radius: design.radius }),
       })
       const { html } = await res.json()
       await navigator.clipboard.writeText(html)
@@ -116,7 +120,7 @@ export default function CreatedOrder() {
       const res = await fetch('/api/orders/created/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, accent_color: design.accentColor, radius: design.radius }),
+        body: JSON.stringify({ ...data, accent_color: design.accentHex, radius: design.radius }),
       })
       if (!res.ok) throw new Error()
       toast.success('Email sent successfully')
@@ -340,25 +344,25 @@ export default function CreatedOrder() {
           <div className="flex flex-col gap-4">
             <Text size="1" weight="bold" className="uppercase tracking-widest text-(--gray-10)">Accent</Text>
             <div className="flex flex-wrap gap-4">
-              {ACCENT_PRESETS.map(({ label, value }) => (
+              {ACCENT_PRESETS.map(({ label, value, hex }) => (
                 <IconButton
                   key={value}
                   title={label}
                   variant="ghost"
                   color="gray"
-                  onClick={() => setDesign(d => ({ ...d, accentColor: value }))}
+                  onClick={() => setDesign(d => ({ ...d, accentColor: value, accentHex: hex }))}
                   style={{ "--swatch": value } as CSSProperties}
-                  className={`w-6! h-6! rounded-full! bg-(--swatch)! ${design.accentColor === value ? "ring-2 ring-(--swatch) ring-offset-2" : ""}`}
+                  className={`w-6! h-6! rounded-full! bg-(--swatch)! transition-all! ${design.accentColor === value ? "outline-2! outline-white! outline-offset!" : ""}`}
                 />
               ))}
             </div>
             <TextField.Root
-              size="1"
-              value={design.accentColor}
+              size="2"
+              value={design.accentHex}
               maxLength={7}
               onChange={e => {
                 const val = e.target.value
-                if (/^#[0-9a-fA-F]{0,6}$/.test(val)) setDesign(d => ({ ...d, accentColor: val }))
+                if (/^#[0-9a-fA-F]{0,6}$/.test(val)) setDesign(d => ({ ...d, accentColor: val, accentHex: val }))
               }}
             >
               <TextField.Slot>
@@ -369,20 +373,20 @@ export default function CreatedOrder() {
 
           <div className="flex flex-col gap-3">
             <Text size="1" weight="bold" className="uppercase tracking-widest text-(--gray-10)">Radius</Text>
-            <Flex direction="column" gap="4">
+            <SegmentedControl.Root
+              value={design.radius}
+              onValueChange={v => setDesign(d => ({ ...d, radius: v as Radius }))}
+              size="2"
+            >
               {RADIUS_OPTIONS.map(({ label, value }) => {
                 const Icon = RADIUS_ICONS[value]
                 return (
-                  <Button
-                    key={value}
-                    onClick={() => setDesign(d => ({ ...d, radius: value }))}
-                  >
-                    <Icon size={14} />
-                    {label}
-                  </Button>
+                  <SegmentedControl.Item key={value} value={value} title={label}>
+                    <Icon size={12} />
+                  </SegmentedControl.Item>
                 )
               })}
-            </Flex>
+            </SegmentedControl.Root>
           </div>
         </div>
       </div>
