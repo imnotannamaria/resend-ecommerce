@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Moon, Sun } from "lucide-react"
 import { IconButton } from "@radix-ui/themes"
 import Link from "next/link"
+import { Toaster } from "sonner"
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [appearance, setAppearance] = useState<"light" | "dark">("dark")
@@ -26,6 +27,15 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         </div>
       </header>
       {children}
+      <Toaster
+        theme={appearance}
+        position="bottom-center"
+        toastOptions={{
+          classNames: {
+            toast: "font-sans text-[13px] rounded-md",
+          },
+        }}
+      />
     </Theme>
   )
 }

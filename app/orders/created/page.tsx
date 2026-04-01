@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button, Flex, Tabs, Text, TextField } from "@radix-ui/themes"
 import { Check, Calendar, Copy, SendHorizontal } from "lucide-react"
+import { toast } from "sonner"
 
 const optionalUrl = z.union([z.url(), z.literal("")]).optional()
 
@@ -70,21 +71,32 @@ export default function CreatedOrder() {
   }
 
   async function onCopy() {
-    const res = await fetch('/api/orders/created/html', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(variables),
-    })
-    const { html } = await res.json()
-    await navigator.clipboard.writeText(html)
+    try {
+      const res = await fetch('/api/orders/created/html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(variables),
+      })
+      const { html } = await res.json()
+      await navigator.clipboard.writeText(html)
+      toast.success('HTML copied to clipboard')
+    } catch {
+      toast.error('Failed to copy HTML')
+    }
   }
 
   async function onSend(data: Variables) {
-    await fetch('/api/orders/created/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
+    try {
+      const res = await fetch('/api/orders/created/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      if (!res.ok) throw new Error()
+      toast.success('Email sent successfully')
+    } catch {
+      toast.error('Failed to send email')
+    }
   }
 
   return (
