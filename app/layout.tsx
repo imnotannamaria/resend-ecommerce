@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { GeistSans } from 'geist/font/sans';
 import '@radix-ui/themes/styles.css';
 import './globals.css';
 import ThemeProvider from './theme-provider';
@@ -15,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={GeistSans.variable}>
       <body>
         <ThemeProvider>
           {children}

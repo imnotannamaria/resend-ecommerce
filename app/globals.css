@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+:root, .light, .dark {
+  --default-font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --heading-font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
