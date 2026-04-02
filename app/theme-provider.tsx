@@ -2,9 +2,8 @@
 
 import { Theme } from "@radix-ui/themes"
 import { useState } from "react"
-import { Moon, Sun } from "lucide-react"
+import { Mail, Moon, Sun } from "lucide-react"
 import { IconButton } from "@radix-ui/themes"
-import Image from "next/image"
 import Link from "next/link"
 import { Toaster } from "sonner"
 
@@ -13,9 +12,13 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
   return (
     <Theme appearance={appearance}>
-      <header className="px-5 py-3 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-        <Image src="/logo.png" alt="Logo" width={50} height={50} className="object-contain" />
-        <Link href="/" className="font-bold text-xl">resend-ecommerce</Link>
+      <header className={`px-5 py-3 border-b flex items-center justify-between ${appearance === "dark" ? "border-zinc-800" : "border-zinc-100"}`}>
+        <Link href="/" className="flex items-center gap-2.5">
+          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${appearance === "dark" ? "bg-white" : "bg-zinc-900"}`}>
+            <Mail size={14} className={appearance === "dark" ? "text-zinc-900" : "text-white"} />
+          </div>
+          <span className="font-semibold text-sm tracking-tight">resend-ecommerce</span>
+        </Link>
         <IconButton
           variant="ghost"
           color="gray"
