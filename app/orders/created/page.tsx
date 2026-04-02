@@ -52,6 +52,7 @@ const previewInnerRadius = { sharp: "rounded-none", medium: "rounded-md", large:
 const optionalUrl = z.union([z.url(), z.literal("")]).optional()
 
 const variablesSchema = z.object({
+  to_email:         z.union([z.email(), z.literal("")]).optional(),
   company_name:     z.string().min(1, "Required"),
   unsubscribe_url:  optionalUrl,
   facebook_url:     optionalUrl,
@@ -72,6 +73,7 @@ type Variables = z.infer<typeof variablesSchema>
 export default function CreatedOrder() {
   const { register, watch, handleSubmit, formState: { errors, isSubmitting } } = useForm<Variables>({
     resolver: zodResolver(variablesSchema),
+    defaultValues: {},
   })
 
   const [design, setDesign] = useState<Design>({
@@ -162,11 +164,22 @@ showDelivery: true, showSignOff: true, showSocialLinks: true,
       <div className="grid grid-cols-[1fr_4fr_1fr] gap-4">
 
         <div className="w-full">
-          <Tabs.Root defaultValue="brand">
+          <Tabs.Root defaultValue="email">
             <Tabs.List size="2" className="w-full">
+              <Tabs.Trigger value="email" className="flex-1 justify-center">Email</Tabs.Trigger>
               <Tabs.Trigger value="brand" className="flex-1 justify-center">Brand</Tabs.Trigger>
               <Tabs.Trigger value="order" className="flex-1 justify-center">Order</Tabs.Trigger>
             </Tabs.List>
+
+            <Tabs.Content value="email" className="pt-4">
+              <Flex direction="column" gap="3">
+                <Flex direction="column" gap="1">
+                  <Text as="label" size="2" weight="bold">To</Text>
+                  <TextField.Root placeholder="anna.maria.dev.br@gmail.com" {...register("to_email")} />
+                  {errors.to_email && <Text size="1" color="red">{errors.to_email.message}</Text>}
+                </Flex>
+              </Flex>
+            </Tabs.Content>
 
             <Tabs.Content value="brand" className="pt-4">
               <Flex direction="column" gap="3">

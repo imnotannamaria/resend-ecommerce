@@ -21,7 +21,7 @@ app.post('/orders/created/send', async (c) => {
 
   const { data, error } = await resend.emails.send({
     from: 'onboarding@resend.dev',
-    to: 'anna.maria.dev.br@gmail.com',
+    to: body.to_email || 'anna.maria.dev.br@gmail.com',
     subject: `Order ${body.order_id} confirmed`,
     html,
   });
