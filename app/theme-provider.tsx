@@ -2,14 +2,14 @@
 
 import { Theme } from "@radix-ui/themes"
 import { useState } from "react"
-import { Mail, Moon, Sun, ShoppingCart, Package, Truck, CheckCircle, ChevronRight } from "lucide-react"
+import { AtSign, Moon, Sun, ShoppingCart, Package, Truck, Check, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { Toaster } from "sonner"
 import { usePathname } from "next/navigation"
 
 const NAV_LINKS = [
   { label: "Order Created",   href: "/orders/created",   icon: ShoppingCart },
-  { label: "Order Confirmed", href: "/orders/confirmed", icon: CheckCircle  },
+  { label: "Order Confirmed", href: "/orders/confirmed", icon: Check        },
   { label: "Order Shipped",   href: "/orders/shipped",   icon: Package      },
   { label: "Order Delivered", href: "/orders/delivered", icon: Truck        },
 ]
@@ -25,7 +25,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
 
         <Link href="/" className="flex items-center gap-2.5 shrink-0">
           <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${isDark ? "bg-white" : "bg-zinc-900"}`}>
-            <Mail size={14} className={isDark ? "text-zinc-900" : "text-white"} />
+            <AtSign size={14} className={isDark ? "text-zinc-900" : "text-white"} />
           </div>
           <span className="font-semibold text-sm tracking-tight">Resend Ecommerce</span>
         </Link>
