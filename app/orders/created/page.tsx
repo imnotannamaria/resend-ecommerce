@@ -4,7 +4,7 @@ import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Button, Flex, IconButton, SegmentedControl, Switch, Tabs, Text, TextField } from "@radix-ui/themes"
+import { Button, Flex, IconButton, SegmentedControl, Switch, Tabs, Text, TextField, Tooltip } from "@radix-ui/themes"
 import { Check, Calendar, Copy, SendHorizontal, Square, SquareDashed, Circle } from "lucide-react"
 import { toast } from "sonner"
 import { useState, type CSSProperties } from "react"
@@ -151,14 +151,18 @@ showDelivery: true, showSignOff: true, showSocialLinks: true,
   return (
     <div className="p-2 flex flex-col gap-4" style={{ "--accent": design.accentColor } as CSSProperties}>
       <div className="flex gap-2 justify-end">
-        <Button variant="soft" color="gray" highContrast onClick={onCopy}>
-          <Copy size={14} />
-          Copy
-        </Button>
-        <Button variant="solid" color="gray" highContrast onClick={handleSubmit(onSend)} loading={isSubmitting}>
-          <SendHorizontal size={14} />
-          Send
-        </Button>
+        <Tooltip content="Copy the rendered HTML — paste it directly into the Resend API or your email client">
+          <Button variant="soft" color="gray" highContrast onClick={onCopy}>
+            <Copy size={14} />
+            Copy
+          </Button>
+        </Tooltip>
+        <Tooltip content="Send a test email to the address configured in the Email tab">
+          <Button variant="solid" color="gray" highContrast onClick={handleSubmit(onSend)} loading={isSubmitting}>
+            <SendHorizontal size={14} />
+            Send
+          </Button>
+        </Tooltip>
       </div>
 
       <div className="grid grid-cols-[1fr_4fr_1fr] gap-4">
