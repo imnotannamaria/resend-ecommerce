@@ -55,6 +55,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
         </nav>
 
         <button
+          type="button"
           onClick={() => setAppearance(isDark ? "light" : "dark")}
           className={`relative flex items-center gap-0.5 p-1 rounded-full border transition-colors duration-200 cursor-pointer
             ${isDark ? "border-zinc-700 bg-zinc-950" : "border-zinc-200 bg-zinc-100"}`}

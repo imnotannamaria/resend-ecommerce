@@ -224,7 +224,7 @@ export default function CreatedOrder() {
               nextLabel="Continue to Order →"
             >
               <Flex direction="column" gap="3">
-                <FormField label="Company name" error={errors.company_name?.message}>
+                <FormField label="Company name" required error={errors.company_name?.message}>
                   <TextField.Root size="2" {...register("company_name")} />
                 </FormField>
                 <FormField label="Unsubscribe URL" error={errors.unsubscribe_url?.message}>
@@ -256,26 +256,26 @@ export default function CreatedOrder() {
               nextLabel="Done ✓"
             >
               <Flex direction="column" gap="3">
-                <FormField label="Customer name" error={errors.customer_name?.message}>
+                <FormField label="Customer name" required error={errors.customer_name?.message}>
                   <TextField.Root size="2" {...register("customer_name")} />
                 </FormField>
-                <FormField label="Delivery date" error={errors.delivery_date?.message}>
+                <FormField label="Delivery date" required error={errors.delivery_date?.message}>
                   <TextField.Root size="2" type="date" {...register("delivery_date")} />
                 </FormField>
-                <FormField label="Order ID" error={errors.order_id?.message}>
+                <FormField label="Order ID" required error={errors.order_id?.message}>
                   <TextField.Root size="2" {...register("order_id")} />
                 </FormField>
                 <Separator size="4" />
-                <FormField label="Product name" error={errors.order_name?.message}>
+                <FormField label="Product name" required error={errors.order_name?.message}>
                   <TextField.Root size="2" {...register("order_name")} />
                 </FormField>
-                <FormField label="Quantity" error={errors.order_quantity?.message}>
+                <FormField label="Quantity" required error={errors.order_quantity?.message}>
                   <TextField.Root size="2" type="number" {...register("order_quantity")} />
                 </FormField>
-                <FormField label="Unit price" error={errors.order_single_price?.message}>
+                <FormField label="Unit price" required error={errors.order_single_price?.message}>
                   <TextField.Root size="2" type="number" {...register("order_single_price")} />
                 </FormField>
-                <FormField label="Total price" error={errors.order_price?.message}>
+                <FormField label="Total price" required error={errors.order_price?.message}>
                   <TextField.Root size="2" type="number" {...register("order_price")} />
                 </FormField>
                 <FormField label="Product image URL" error={errors.order_image?.message}>
@@ -351,7 +351,7 @@ export default function CreatedOrder() {
               <div className="px-12 pb-10 border-t border-zinc-100 pt-8">
                 <p className="text-zinc-500 text-sm leading-relaxed">
                   Questions about your order? Reply to this email or visit our{" "}
-                  <a href="#" className="underline underline-offset-2 text-(--accent)">Help Center</a>.
+                  <a href="https://example.com/help" className="underline underline-offset-2 text-(--accent)">Help Center</a>.
                 </p>
                 <p className="text-zinc-800 font-medium mt-5">{ph(v.company_name)}</p>
               </div>
@@ -365,18 +365,18 @@ export default function CreatedOrder() {
               {design.showSocialLinks && (v.facebook_url || v.twitter_url || v.instagram_url) && (
                 <div className="flex gap-2 shrink-0">
                   {v.facebook_url && (
-                    <a href={v.facebook_url} className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
-                      <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    <a href={v.facebook_url} aria-label="Facebook" className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
+                      <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24" aria-label="Facebook" role="img"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
                     </a>
                   )}
                   {v.twitter_url && (
-                    <a href={v.twitter_url} className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
-                      <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+                    <a href={v.twitter_url} aria-label="Twitter" className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
+                      <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24" aria-label="Twitter" role="img"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
                     </a>
                   )}
                   {v.instagram_url && (
-                    <a href={v.instagram_url} className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
-                      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <a href={v.instagram_url} aria-label="Instagram" className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
+                      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-label="Instagram" role="img">
                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#a1a1aa"/>
                       </svg>
                     </a>
