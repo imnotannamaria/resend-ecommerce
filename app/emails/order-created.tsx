@@ -1,7 +1,7 @@
 interface OrderCreatedEmailProps {
   company_name: string
+  help_center_url?: string
   unsubscribe_url?: string
-  facebook_url?: string
   twitter_url?: string
   instagram_url?: string
   customer_name: string
@@ -32,8 +32,8 @@ const radiusInnerMap = { sharp: "0px", medium: "6px", large: "10px" }
 
 export function OrderCreatedEmail({
   company_name,
+  help_center_url = "https://example.com/help",
   unsubscribe_url = "#",
-  facebook_url,
   twitter_url,
   instagram_url,
   customer_name,
@@ -51,7 +51,7 @@ export function OrderCreatedEmail({
   show_sign_off = true,
   show_social_links = true,
 }: OrderCreatedEmailProps) {
-  const hasSocial = facebook_url || twitter_url || instagram_url
+  const hasSocial = twitter_url || instagram_url
   const r = radiusMap[radius]
   const ri = radiusInnerMap[radius]
 
@@ -135,7 +135,7 @@ export function OrderCreatedEmail({
         <div style={{ padding: "32px 48px 40px", borderTop: "1px solid #f4f4f5" }}>
           <p style={{ color: "#71717a", fontSize: "14px", lineHeight: "1.625", margin: "0 0 20px" }}>
             Questions about your order? Reply to this email or visit our{" "}
-            <a href="https://example.com/help" style={{ color: accent_color, textDecoration: "underline", textUnderlineOffset: "2px" }}>Help Center</a>.
+            <a href={help_center_url} style={{ color: accent_color, textDecoration: "underline", textUnderlineOffset: "2px" }}>Help Center</a>.
           </p>
           <p style={{ color: "#27272a", fontWeight: "500", margin: 0 }}>{company_name}</p>
         </div>
@@ -155,11 +155,6 @@ export function OrderCreatedEmail({
               </td>
               {show_social_links && hasSocial && (
                 <td style={{ verticalAlign: "middle", textAlign: "right", whiteSpace: "nowrap" }}>
-                  {facebook_url && (
-                    <a href={facebook_url} aria-label="Facebook" style={{ display: "inline-block", width: "28px", height: "28px", lineHeight: "26px", borderRadius: "50%", border: "1px solid #e4e4e7", textAlign: "center", textDecoration: "none", marginLeft: "8px" }}>
-                      <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24" aria-label="Facebook" role="img" style={{ verticalAlign: "middle" }}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                    </a>
-                  )}
                   {twitter_url && (
                     <a href={twitter_url} aria-label="Twitter" style={{ display: "inline-block", width: "28px", height: "28px", lineHeight: "26px", borderRadius: "50%", border: "1px solid #e4e4e7", textAlign: "center", textDecoration: "none", marginLeft: "8px" }}>
                       <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24" aria-label="Twitter" role="img" style={{ verticalAlign: "middle" }}><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>

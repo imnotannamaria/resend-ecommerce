@@ -57,8 +57,8 @@ const optionalUrl = z.union([z.url(), z.literal("")]).optional()
 const variablesSchema = z.object({
   to_email:           z.union([z.email(), z.literal("")]).optional(),
   company_name:       z.string().min(1, "Required"),
+  help_center_url:    optionalUrl,
   unsubscribe_url:    optionalUrl,
-  facebook_url:       optionalUrl,
   twitter_url:        optionalUrl,
   instagram_url:      optionalUrl,
   customer_name:      z.string().min(1, "Required"),
@@ -67,12 +67,17 @@ const variablesSchema = z.object({
   order_name:         z.string().min(1, "Required"),
   order_quantity:     z.string().min(1, "Required"),
   order_single_price: z.string().min(1, "Required"),
-  order_price:        z.string().min(1, "Required"),
   order_image:        optionalUrl,
 })
 
 type Variables = z.infer<typeof variablesSchema>
 
+function computeTotal(qty: string | undefined, unit: string | undefined): string {
+  const q = parseFloat(qty || "")
+  const u = parseFloat(unit || "")
+  if (!isNaN(q) && !isNaN(u) && q > 0 && u > 0) return (q * u).toFixed(2)
+  return ""
+}
 
 export default function CreatedOrder() {
   const { register, watch, handleSubmit, trigger, formState: { errors, isSubmitting, isValid } } = useForm<Variables>({
@@ -89,6 +94,8 @@ export default function CreatedOrder() {
   })
 
   const variables = watch()
+
+  const orderTotal = computeTotal(variables.order_quantity, variables.order_single_price)
 
   function formatDate(value: string | undefined) {
     if (!value) return undefined
@@ -109,10 +116,10 @@ export default function CreatedOrder() {
     order_name:         val(variables.order_name,         "PRODUCT_NAME"),
     order_quantity:     val(variables.order_quantity,     "QTY"),
     order_single_price: val(variables.order_single_price, "UNIT_PRICE"),
-    order_price:        val(variables.order_price,        "TOTAL_PRICE"),
+    order_price:        val(orderTotal,                   "TOTAL_PRICE"),
     order_image:        variables.order_image || "",
     unsubscribe_url:    variables.unsubscribe_url || "#",
-    facebook_url:       variables.facebook_url || "",
+    help_center_url:    variables.help_center_url || "https://example.com/help",
     twitter_url:        variables.twitter_url  || "",
     instagram_url:      variables.instagram_url || "",
   }
@@ -125,12 +132,24 @@ export default function CreatedOrder() {
     )
   }
 
+  function buildPayload(data: Variables) {
+    return {
+      ...data,
+      order_price: computeTotal(data.order_quantity, data.order_single_price),
+      accent_color: design.accentHex,
+      radius: design.radius,
+      show_delivery: design.showDelivery,
+      show_sign_off: design.showSignOff,
+      show_social_links: design.showSocialLinks,
+    }
+  }
+
   async function onCopy() {
     try {
       const res = await fetch('/api/orders/created/html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...variables, accent_color: design.accentHex, radius: design.radius, show_delivery: design.showDelivery, show_sign_off: design.showSignOff, show_social_links: design.showSocialLinks }),
+        body: JSON.stringify(buildPayload(variables as Variables)),
       })
       const { html } = await res.json()
       await navigator.clipboard.writeText(html)
@@ -145,7 +164,7 @@ export default function CreatedOrder() {
       const res = await fetch('/api/orders/created/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, accent_color: design.accentHex, radius: design.radius, show_delivery: design.showDelivery, show_sign_off: design.showSignOff, show_social_links: design.showSocialLinks }),
+        body: JSON.stringify(buildPayload(data)),
       })
       if (!res.ok) throw new Error()
       toast.success('Email sent successfully')
@@ -219,7 +238,7 @@ export default function CreatedOrder() {
               open={activeStep === 2}
               onToggle={() => setActiveStep(s => s === 2 ? 1 : 2)}
               onNext={async () => {
-                const ok = await trigger(["company_name", "unsubscribe_url", "facebook_url", "twitter_url", "instagram_url"])
+                const ok = await trigger(["company_name", "help_center_url", "unsubscribe_url", "twitter_url", "instagram_url"])
                 if (ok) setActiveStep(3)
               }}
               nextLabel="Continue to Order →"
@@ -228,18 +247,18 @@ export default function CreatedOrder() {
                 <FormField label="Company name" required error={errors.company_name?.message}>
                   <TextField.Root size="2" placeholder="Acme Inc." {...register("company_name")} />
                 </FormField>
+                <FormField label="Help Center URL" error={errors.help_center_url?.message}>
+                  <TextField.Root size="2" placeholder="https://acme.com/help" {...register("help_center_url")} />
+                </FormField>
                 <FormField label="Unsubscribe URL" error={errors.unsubscribe_url?.message}>
-                  <TextField.Root size="2" placeholder="https://" {...register("unsubscribe_url")} />
+                  <TextField.Root size="2" placeholder="https://acme.com/unsubscribe" {...register("unsubscribe_url")} />
                 </FormField>
                 <Separator size="4" />
-                <FormField label="Facebook URL" error={errors.facebook_url?.message}>
-                  <TextField.Root size="2" placeholder="https://facebook.com/…" {...register("facebook_url")} />
-                </FormField>
                 <FormField label="Twitter / X URL" error={errors.twitter_url?.message}>
-                  <TextField.Root size="2" placeholder="https://twitter.com/…" {...register("twitter_url")} />
+                  <TextField.Root size="2" placeholder="https://twitter.com/acme" {...register("twitter_url")} />
                 </FormField>
                 <FormField label="Instagram URL" error={errors.instagram_url?.message}>
-                  <TextField.Root size="2" placeholder="https://instagram.com/…" {...register("instagram_url")} />
+                  <TextField.Root size="2" placeholder="https://instagram.com/acme" {...register("instagram_url")} />
                 </FormField>
               </Flex>
             </StepSection>
@@ -251,7 +270,7 @@ export default function CreatedOrder() {
               open={activeStep === 3}
               onToggle={() => setActiveStep(s => s === 3 ? 2 : 3)}
               onNext={async () => {
-                const ok = await trigger(["customer_name", "delivery_date", "order_id", "order_name", "order_quantity", "order_single_price", "order_price", "order_image"])
+                const ok = await trigger(["customer_name", "delivery_date", "order_id", "order_name", "order_quantity", "order_single_price", "order_image"])
                 if (ok) setActiveStep(4)
               }}
               nextLabel="Done ✓"
@@ -274,13 +293,13 @@ export default function CreatedOrder() {
                   <TextField.Root size="2" placeholder="1" type="number" {...register("order_quantity")} />
                 </FormField>
                 <FormField label="Unit price" required error={errors.order_single_price?.message}>
-                  <TextField.Root size="2" placeholder="$99.00" type="number" {...register("order_single_price")} />
+                  <TextField.Root size="2" placeholder="99.00" type="number" {...register("order_single_price")} />
                 </FormField>
-                <FormField label="Total price" required error={errors.order_price?.message}>
-                  <TextField.Root size="2" placeholder="$99.00" type="number" {...register("order_price")} />
+                <FormField label="Total price">
+                  <TextField.Root size="2" value={orderTotal || ""} placeholder="Auto-calculated" readOnly className="opacity-70 cursor-not-allowed" />
                 </FormField>
                 <FormField label="Product image URL" error={errors.order_image?.message}>
-                  <TextField.Root size="2" placeholder="https://" {...register("order_image")} />
+                  <TextField.Root size="2" placeholder="https://acme.com/product.jpg" {...register("order_image")} />
                 </FormField>
               </Flex>
             </StepSection>
@@ -352,7 +371,7 @@ export default function CreatedOrder() {
               <div className="px-12 pb-10 border-t border-zinc-100 pt-8">
                 <p className="text-zinc-500 text-sm leading-relaxed">
                   Questions about your order? Reply to this email or visit our{" "}
-                  <a href="https://example.com/help" className="underline underline-offset-2 text-(--accent)">Help Center</a>.
+                  <a href={v.help_center_url} className="underline underline-offset-2 text-(--accent)">Help Center</a>.
                 </p>
                 <p className="text-zinc-800 font-medium mt-5">{ph(v.company_name)}</p>
               </div>
@@ -363,25 +382,16 @@ export default function CreatedOrder() {
                 You received this email because you placed an order.{" "}
                 <a href={v.unsubscribe_url} className="underline underline-offset-2 text-(--accent)">Unsubscribe</a>
               </p>
-              {design.showSocialLinks && (v.facebook_url || v.twitter_url || v.instagram_url) && (
+              {design.showSocialLinks && (
                 <div className="flex gap-2 shrink-0">
-                  {v.facebook_url && (
-                    <a href={v.facebook_url} aria-label="Facebook" className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
-                      <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24" aria-label="Facebook" role="img"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                    </a>
-                  )}
-                  {v.twitter_url && (
-                    <a href={v.twitter_url} aria-label="Twitter" className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
-                      <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24" aria-label="Twitter" role="img"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-                    </a>
-                  )}
-                  {v.instagram_url && (
-                    <a href={v.instagram_url} aria-label="Instagram" className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
-                      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-label="Instagram" role="img">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#a1a1aa"/>
-                      </svg>
-                    </a>
-                  )}
+                  <a href={v.twitter_url || "#"} aria-label="Twitter" className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
+                    <svg width="12" height="12" fill="#a1a1aa" viewBox="0 0 24 24" aria-label="Twitter" role="img"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
+                  </a>
+                  <a href={v.instagram_url || "#"} aria-label="Instagram" className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors">
+                    <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-label="Instagram" role="img">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#a1a1aa"/>
+                    </svg>
+                  </a>
                 </div>
               )}
             </div>
