@@ -139,28 +139,30 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="max-w-2xl mx-auto px-6 pb-10">
-          <Callout.Root color="amber" variant="soft">
-            <Callout.Icon>
-              <Info size={14} />
-            </Callout.Icon>
-            <Callout.Text>
-              This live demo runs on my Resend API key — the{' '}
-              <strong>Send</strong> action can only deliver to my address.{' '}
-              <a
-                href="https://github.com/imnotannamaria/resend-ecommerce"
-                target="_blank"
-                rel="noreferrer"
-                className="underline underline-offset-2 font-medium"
-              >
-                Clone the repo
-              </a>{' '}
-              and set your own{' '}
-              <code className="font-mono text-xs">RESEND_API_KEY</code> to send
-              to any inbox.
-            </Callout.Text>
-          </Callout.Root>
-        </section>
+        {process.env.NODE_ENV === 'production' && (
+          <section className="max-w-2xl mx-auto px-6 pb-10">
+            <Callout.Root color="amber" variant="soft">
+              <Callout.Icon>
+                <Info size={14} />
+              </Callout.Icon>
+              <Callout.Text>
+                This live demo runs on my Resend API key — the{' '}
+                <strong>Send</strong> action can only deliver to my address.{' '}
+                <a
+                  href="https://github.com/imnotannamaria/resend-ecommerce"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline underline-offset-2 font-medium"
+                >
+                  Clone the repo
+                </a>{' '}
+                and set your own{' '}
+                <code className="font-mono text-xs">RESEND_API_KEY</code> to
+                send to any inbox.
+              </Callout.Text>
+            </Callout.Root>
+          </section>
+        )}
 
         <section className="max-w-2xl mx-auto px-6 pb-24">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-(--gray-9) mb-8 text-center">

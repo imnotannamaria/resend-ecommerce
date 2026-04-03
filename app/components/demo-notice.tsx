@@ -4,6 +4,8 @@ import { Callout } from '@radix-ui/themes';
 import { Info } from 'lucide-react';
 
 export function DemoNotice() {
+  if (process.env.NODE_ENV !== 'production') return null;
+
   return (
     <div className="p-3 border-t border-(--gray-5) shrink-0">
       <Callout.Root size="1" color="amber" variant="soft">
