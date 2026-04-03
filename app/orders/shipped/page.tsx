@@ -38,6 +38,7 @@ const previewRadius = {
   medium: 'rounded-lg',
   large: 'rounded-2xl',
 };
+const previewInnerRadiusPx = { sharp: '0px', medium: '6px', large: '10px' };
 const previewInnerRadius = {
   sharp: 'rounded-none',
   medium: 'rounded-md',
@@ -501,10 +502,7 @@ export default function ShippedOrder() {
                         href={v.tracking_url}
                         className="inline-block text-[13px] font-medium px-4 py-2 rounded text-white bg-(--accent) no-underline"
                         style={{
-                          borderRadius:
-                            previewInnerRadius[design.radius] === 'rounded-none'
-                              ? '0'
-                              : undefined,
+                          borderRadius: previewInnerRadiusPx[design.radius],
                         }}
                       >
                         Track your package →
