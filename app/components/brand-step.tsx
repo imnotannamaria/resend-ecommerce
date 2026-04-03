@@ -11,7 +11,6 @@ interface BrandStepProps {
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
   // biome-ignore lint/suspicious/noExplicitAny: shared across multiple form schemas
   register: UseFormRegister<any>;
-  // biome-ignore lint/suspicious/noExplicitAny: shared across multiple form schemas
   errors: Record<string, { message?: string } | undefined>;
   // biome-ignore lint/suspicious/noExplicitAny: shared across multiple form schemas
   trigger: UseFormTrigger<any>;

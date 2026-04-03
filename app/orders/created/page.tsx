@@ -75,7 +75,8 @@ function computeTotal(
 ): string {
   const q = parseFloat(qty || '');
   const u = parseFloat(unit || '');
-  if (!isNaN(q) && !isNaN(u) && q > 0 && u > 0) return (q * u).toFixed(2);
+  if (!Number.isNaN(q) && !Number.isNaN(u) && q > 0 && u > 0)
+    return (q * u).toFixed(2);
   return '';
 }
 
