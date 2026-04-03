@@ -81,35 +81,32 @@ export function OrderCreatedEmail({
           borderBottom: '1px solid #f4f4f5',
         }}
       >
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            backgroundColor: accent_color,
-            marginBottom: '20px',
-          }}
+        <table
+          cellPadding="0"
+          cellSpacing="0"
+          style={{ margin: '0 auto 20px' }}
         >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-label="Order Created"
-            role="img"
-          >
-            <circle cx="8" cy="21" r="1" />
-            <circle cx="19" cy="21" r="1" />
-            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-          </svg>
-        </div>
+          <tbody>
+            <tr>
+              <td
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  backgroundColor: accent_color,
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  fontSize: '20px',
+                  lineHeight: '1',
+                  paddingTop: '2px',
+                  paddingLeft: '5px',
+                }}
+              >
+                🛒
+              </td>
+            </tr>
+          </tbody>
+        </table>
         <h1
           style={{
             fontSize: '24px',
@@ -119,7 +116,7 @@ export function OrderCreatedEmail({
             letterSpacing: '-0.025em',
           }}
         >
-          Order confirmed
+          Order created
         </h1>
         <p
           style={{
@@ -395,84 +392,78 @@ export function OrderCreatedEmail({
                 </p>
               </td>
               {show_social_links && hasSocial && (
-                <td
-                  style={{
-                    verticalAlign: 'middle',
-                    textAlign: 'right',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {twitter_url && (
-                    <a
-                      href={twitter_url}
-                      aria-label="Twitter"
-                      style={{
-                        display: 'inline-block',
-                        width: '28px',
-                        height: '28px',
-                        lineHeight: '26px',
-                        borderRadius: '50%',
-                        border: '1px solid #e4e4e7',
-                        textAlign: 'center',
-                        textDecoration: 'none',
-                        marginLeft: '8px',
-                      }}
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        fill="#a1a1aa"
-                        viewBox="0 0 24 24"
-                        aria-label="Twitter"
-                        role="img"
-                        style={{ verticalAlign: 'middle' }}
-                      >
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-                      </svg>
-                    </a>
-                  )}
-                  {instagram_url && (
-                    <a
-                      href={instagram_url}
-                      aria-label="Instagram"
-                      style={{
-                        display: 'inline-block',
-                        width: '28px',
-                        height: '28px',
-                        lineHeight: '26px',
-                        borderRadius: '50%',
-                        border: '1px solid #e4e4e7',
-                        textAlign: 'center',
-                        textDecoration: 'none',
-                        marginLeft: '8px',
-                      }}
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="#a1a1aa"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-label="Instagram"
-                        role="img"
-                        style={{ verticalAlign: 'middle' }}
-                      >
-                        <rect
-                          x="2"
-                          y="2"
-                          width="20"
-                          height="20"
-                          rx="5"
-                          ry="5"
-                        />
-                        <circle cx="12" cy="12" r="4" />
-                        <circle cx="17.5" cy="6.5" r="0.5" fill="#a1a1aa" />
-                      </svg>
-                    </a>
-                  )}
+                <td style={{ verticalAlign: 'middle', textAlign: 'right' }}>
+                  <table
+                    cellPadding="0"
+                    cellSpacing="0"
+                    style={{ display: 'inline-table' }}
+                  >
+                    <tbody>
+                      <tr>
+                        {twitter_url && (
+                          <td style={{ paddingLeft: '8px' }}>
+                            <a
+                              href={twitter_url}
+                              aria-label="Twitter"
+                              style={{ textDecoration: 'none' }}
+                            >
+                              <table cellPadding="0" cellSpacing="0">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '50%',
+                                        border: '1px solid #e4e4e7',
+                                        textAlign: 'center',
+                                        verticalAlign: 'middle',
+                                        fontSize: '13px',
+                                        color: '#a1a1aa',
+                                      }}
+                                    >
+                                      𝕏
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </a>
+                          </td>
+                        )}
+                        {instagram_url && (
+                          <td style={{ paddingLeft: '8px' }}>
+                            <a
+                              href={instagram_url}
+                              aria-label="Instagram"
+                              style={{ textDecoration: 'none' }}
+                            >
+                              <table cellPadding="0" cellSpacing="0">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '50%',
+                                        border: '1px solid #e4e4e7',
+                                        textAlign: 'center',
+                                        verticalAlign: 'middle',
+                                        fontSize: '12px',
+                                        lineHeight: '1',
+                                        paddingBottom: '2px',
+                                      }}
+                                    >
+                                      📷
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </a>
+                          </td>
+                        )}
+                      </tr>
+                    </tbody>
+                  </table>
                 </td>
               )}
             </tr>

@@ -405,7 +405,7 @@ export default function CreatedOrder() {
                 <ShoppingCart size={20} stroke="white" strokeWidth={2} />
               </div>
               <h1 className="text-2xl font-bold mb-2 tracking-tight text-(--accent)">
-                Order confirmed
+                Order created
               </h1>
               <p className="text-zinc-400 text-xs tracking-widest uppercase font-medium">
                 Order #{ph(v.order_id)}
