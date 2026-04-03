@@ -87,37 +87,31 @@ export function OrderDeliveredEmail({
           borderBottom: '1px solid #f4f4f5',
         }}
       >
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            backgroundColor: accent_color,
-            marginBottom: '20px',
-          }}
+        <table
+          cellPadding="0"
+          cellSpacing="0"
+          style={{ margin: '0 auto 20px' }}
         >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-label="Delivered"
-            role="img"
-          >
-            <path d="m16 16 2 2 4-4" />
-            <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l3.5-2" />
-            <path d="M16.5 9.4 7.55 4.24" />
-            <polyline points="3.29 7 12 12 20.71 7" />
-            <line x1="12" x2="12" y1="22" y2="12" />
-          </svg>
-        </div>
+          <tbody>
+            <tr>
+              <td
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  backgroundColor: accent_color,
+                  textAlign: 'center',
+                  verticalAlign: 'middle',
+                  fontSize: '22px',
+                  lineHeight: '1',
+                  paddingBottom: '2px',
+                }}
+              >
+                🏠
+              </td>
+            </tr>
+          </tbody>
+        </table>
         <h1
           style={{
             fontSize: '24px',
@@ -176,51 +170,47 @@ export function OrderDeliveredEmail({
             >
               Delivery confirmation
             </p>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: delivery_note ? '8px' : '0',
-              }}
-            >
-              <p style={{ color: '#71717a', margin: 0, fontSize: '13px' }}>
-                Delivered on
-              </p>
-              <p
-                style={{
-                  color: '#27272a',
-                  fontWeight: '600',
-                  margin: 0,
-                  fontSize: '13px',
-                }}
-              >
-                {formatDate(delivered_date)}
-              </p>
-            </div>
-            {delivery_note && (
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <p style={{ color: '#71717a', margin: 0, fontSize: '13px' }}>
-                  Note
-                </p>
-                <p
-                  style={{
-                    color: '#27272a',
-                    fontWeight: '500',
-                    margin: 0,
-                    fontSize: '13px',
-                  }}
-                >
-                  {delivery_note}
-                </p>
-              </div>
-            )}
+            <table width="100%" cellPadding="0" cellSpacing="0">
+              <tbody>
+                <tr>
+                  <td
+                    style={{
+                      color: '#71717a',
+                      fontSize: '13px',
+                      paddingBottom: delivery_note ? '8px' : '0',
+                    }}
+                  >
+                    Delivered on
+                  </td>
+                  <td
+                    style={{
+                      color: '#27272a',
+                      fontWeight: '600',
+                      fontSize: '13px',
+                      textAlign: 'right',
+                      paddingBottom: delivery_note ? '8px' : '0',
+                    }}
+                  >
+                    {formatDate(delivered_date)}
+                  </td>
+                </tr>
+                {delivery_note && (
+                  <tr>
+                    <td style={{ color: '#71717a', fontSize: '13px' }}>Note</td>
+                    <td
+                      style={{
+                        color: '#27272a',
+                        fontWeight: '500',
+                        fontSize: '13px',
+                        textAlign: 'right',
+                      }}
+                    >
+                      {delivery_note}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         )}
 
@@ -494,84 +484,78 @@ export function OrderDeliveredEmail({
                 </p>
               </td>
               {show_social_links && hasSocial && (
-                <td
-                  style={{
-                    verticalAlign: 'middle',
-                    textAlign: 'right',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {twitter_url && (
-                    <a
-                      href={twitter_url}
-                      aria-label="Twitter"
-                      style={{
-                        display: 'inline-block',
-                        width: '28px',
-                        height: '28px',
-                        lineHeight: '26px',
-                        borderRadius: '50%',
-                        border: '1px solid #e4e4e7',
-                        textAlign: 'center',
-                        textDecoration: 'none',
-                        marginLeft: '8px',
-                      }}
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        fill="#a1a1aa"
-                        viewBox="0 0 24 24"
-                        aria-label="Twitter"
-                        role="img"
-                        style={{ verticalAlign: 'middle' }}
-                      >
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-                      </svg>
-                    </a>
-                  )}
-                  {instagram_url && (
-                    <a
-                      href={instagram_url}
-                      aria-label="Instagram"
-                      style={{
-                        display: 'inline-block',
-                        width: '28px',
-                        height: '28px',
-                        lineHeight: '26px',
-                        borderRadius: '50%',
-                        border: '1px solid #e4e4e7',
-                        textAlign: 'center',
-                        textDecoration: 'none',
-                        marginLeft: '8px',
-                      }}
-                    >
-                      <svg
-                        width="12"
-                        height="12"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="#a1a1aa"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-label="Instagram"
-                        role="img"
-                        style={{ verticalAlign: 'middle' }}
-                      >
-                        <rect
-                          x="2"
-                          y="2"
-                          width="20"
-                          height="20"
-                          rx="5"
-                          ry="5"
-                        />
-                        <circle cx="12" cy="12" r="4" />
-                        <circle cx="17.5" cy="6.5" r="0.5" fill="#a1a1aa" />
-                      </svg>
-                    </a>
-                  )}
+                <td style={{ verticalAlign: 'middle', textAlign: 'right' }}>
+                  <table
+                    cellPadding="0"
+                    cellSpacing="0"
+                    style={{ display: 'inline-table' }}
+                  >
+                    <tbody>
+                      <tr>
+                        {twitter_url && (
+                          <td style={{ paddingLeft: '8px' }}>
+                            <a
+                              href={twitter_url}
+                              aria-label="Twitter"
+                              style={{ textDecoration: 'none' }}
+                            >
+                              <table cellPadding="0" cellSpacing="0">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '50%',
+                                        border: '1px solid #e4e4e7',
+                                        textAlign: 'center',
+                                        verticalAlign: 'middle',
+                                        fontSize: '13px',
+                                        color: '#a1a1aa',
+                                      }}
+                                    >
+                                      𝕏
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </a>
+                          </td>
+                        )}
+                        {instagram_url && (
+                          <td style={{ paddingLeft: '8px' }}>
+                            <a
+                              href={instagram_url}
+                              aria-label="Instagram"
+                              style={{ textDecoration: 'none' }}
+                            >
+                              <table cellPadding="0" cellSpacing="0">
+                                <tbody>
+                                  <tr>
+                                    <td
+                                      style={{
+                                        width: '28px',
+                                        height: '28px',
+                                        borderRadius: '50%',
+                                        border: '1px solid #e4e4e7',
+                                        textAlign: 'center',
+                                        verticalAlign: 'middle',
+                                        fontSize: '12px',
+                                        lineHeight: '1',
+                                        paddingBottom: '2px',
+                                      }}
+                                    >
+                                      📷
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </a>
+                          </td>
+                        )}
+                      </tr>
+                    </tbody>
+                  </table>
                 </td>
               )}
             </tr>
