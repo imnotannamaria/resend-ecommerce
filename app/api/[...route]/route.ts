@@ -4,6 +4,7 @@ import { handle } from 'hono/vercel';
 import { Resend } from 'resend';
 import { OrderConfirmedEmail } from '@/app/emails/order-confirmed';
 import { OrderCreatedEmail } from '@/app/emails/order-created';
+import { OrderShippedEmail } from '@/app/emails/order-shipped';
 import { env } from '@/env';
 
 const app = new Hono().basePath('/api');
@@ -47,6 +48,25 @@ app.post('/orders/confirmed/send', async (c) => {
     from: 'onboarding@resend.dev',
     to: body.to_email || 'anna.maria.dev.br@gmail.com',
     subject: `Payment confirmed for order ${body.order_id}`,
+    html,
+  });
+  if (error) return c.json({ error }, 400);
+  return c.json({ data });
+});
+
+app.post('/orders/shipped/html', async (c) => {
+  const body = await c.req.json();
+  const html = await render(OrderShippedEmail(body));
+  return c.json({ html });
+});
+
+app.post('/orders/shipped/send', async (c) => {
+  const body = await c.req.json();
+  const html = await render(OrderShippedEmail(body));
+  const { data, error } = await resend.emails.send({
+    from: 'onboarding@resend.dev',
+    to: body.to_email || 'anna.maria.dev.br@gmail.com',
+    subject: `Your order ${body.order_id} has been shipped`,
     html,
   });
   if (error) return c.json({ error }, 400);
