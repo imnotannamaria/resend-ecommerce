@@ -50,7 +50,6 @@ npm run dev
 - [Tailwind CSS v4](https://tailwindcss.com) — Styling
 - [React Hook Form](https://react-hook-form.com) + [Zod](https://zod.dev) — Form validation
 - [Hono](https://hono.dev) — API routes
-- [Drizzle ORM](https://orm.drizzle.team) + [PostgreSQL](https://www.postgresql.org) — Database
 - [Sonner](https://sonner.emilkowal.ski) — Toast notifications
 - [Vitest](https://vitest.dev) — Tests
 - [Biome](https://biomejs.dev) — Linting and formatting
