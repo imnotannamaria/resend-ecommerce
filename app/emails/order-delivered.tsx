@@ -1,4 +1,4 @@
-interface OrderConfirmedEmailProps {
+interface OrderDeliveredEmailProps {
   company_name: string;
   help_center_url?: string;
   unsubscribe_url?: string;
@@ -6,24 +6,37 @@ interface OrderConfirmedEmailProps {
   instagram_url?: string;
   customer_name: string;
   order_id: string;
+  delivered_date: string;
+  delivery_note?: string;
+  review_url?: string;
   order_name: string;
   order_quantity: string;
   order_single_price: string;
   order_price: string;
-  payment_method: string;
   order_image?: string;
   accent_color?: string;
   radius?: 'sharp' | 'medium' | 'large';
   bg_color?: string;
-  show_payment?: boolean;
+  show_delivery?: boolean;
+  show_review?: boolean;
   show_sign_off?: boolean;
   show_social_links?: boolean;
+}
+
+function formatDate(value: string | undefined) {
+  if (!value) return value;
+  const [year, month, day] = value.split('-').map(Number);
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(new Date(year, month - 1, day));
 }
 
 const radiusMap = { sharp: '0px', medium: '8px', large: '16px' };
 const radiusInnerMap = { sharp: '0px', medium: '6px', large: '10px' };
 
-export function OrderConfirmedEmail({
+export function OrderDeliveredEmail({
   company_name,
   help_center_url = 'https://example.com/help',
   unsubscribe_url = '#',
@@ -31,19 +44,22 @@ export function OrderConfirmedEmail({
   instagram_url,
   customer_name,
   order_id,
+  delivered_date,
+  delivery_note,
+  review_url,
   order_name,
   order_quantity,
   order_single_price,
   order_price,
-  payment_method,
   order_image,
   accent_color = '#18181b',
   radius = 'medium',
   bg_color = '#ffffff',
-  show_payment = true,
+  show_delivery = true,
+  show_review = true,
   show_sign_off = true,
   show_social_links = true,
-}: OrderConfirmedEmailProps) {
+}: OrderDeliveredEmailProps) {
   const hasSocial = twitter_url || instagram_url;
   const r = radiusMap[radius];
   const ri = radiusInnerMap[radius];
@@ -89,13 +105,17 @@ export function OrderConfirmedEmail({
             viewBox="0 0 24 24"
             fill="none"
             stroke="white"
-            strokeWidth="2.5"
+            strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            aria-label="Payment Confirmed"
+            aria-label="Delivered"
             role="img"
           >
-            <polyline points="20 6 9 12 4 8" />
+            <path d="m16 16 2 2 4-4" />
+            <path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l3.5-2" />
+            <path d="M16.5 9.4 7.55 4.24" />
+            <polyline points="3.29 7 12 12 20.71 7" />
+            <line x1="12" x2="12" y1="22" y2="12" />
           </svg>
         </div>
         <h1
@@ -107,7 +127,7 @@ export function OrderConfirmedEmail({
             letterSpacing: '-0.025em',
           }}
         >
-          Payment confirmed
+          Your order has arrived!
         </h1>
         <p
           style={{
@@ -130,12 +150,11 @@ export function OrderConfirmedEmail({
         <p
           style={{ color: '#71717a', lineHeight: '1.625', margin: '0 0 32px' }}
         >
-          Great news! Your payment has been confirmed and we're already
-          preparing your order. You'll receive a shipping notification as soon
-          as it's on the way.
+          Your package has been delivered. We hope you love your order! If you
+          have any questions or concerns, don't hesitate to reach out.
         </p>
 
-        {show_payment && (
+        {show_delivery && (
           <div
             style={{
               backgroundColor: '#fafafa',
@@ -152,32 +171,105 @@ export function OrderConfirmedEmail({
                 color: '#71717a',
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
-                margin: '0 0 8px',
+                margin: '0 0 12px',
               }}
             >
-              Payment details
+              Delivery confirmation
             </p>
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                marginBottom: delivery_note ? '8px' : '0',
               }}
             >
-              <p style={{ color: '#27272a', fontWeight: '500', margin: 0 }}>
-                {payment_method}
+              <p style={{ color: '#71717a', margin: 0, fontSize: '13px' }}>
+                Delivered on
               </p>
               <p
                 style={{
                   color: '#27272a',
                   fontWeight: '600',
                   margin: 0,
-                  fontVariantNumeric: 'tabular-nums',
+                  fontSize: '13px',
                 }}
               >
-                ${order_price}
+                {formatDate(delivered_date)}
               </p>
             </div>
+            {delivery_note && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <p style={{ color: '#71717a', margin: 0, fontSize: '13px' }}>
+                  Note
+                </p>
+                <p
+                  style={{
+                    color: '#27272a',
+                    fontWeight: '500',
+                    margin: 0,
+                    fontSize: '13px',
+                  }}
+                >
+                  {delivery_note}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {show_review && review_url && (
+          <div
+            style={{
+              textAlign: 'center',
+              backgroundColor: '#fafafa',
+              border: '1px solid #f4f4f5',
+              borderRadius: ri,
+              padding: '24px 20px',
+              marginBottom: '32px',
+            }}
+          >
+            <p
+              style={{
+                fontSize: '15px',
+                fontWeight: '600',
+                color: '#18181b',
+                margin: '0 0 4px',
+              }}
+            >
+              Enjoying your purchase?
+            </p>
+            <p
+              style={{
+                color: '#71717a',
+                fontSize: '13px',
+                margin: '0 0 16px',
+                lineHeight: '1.5',
+              }}
+            >
+              Your feedback helps other customers make better decisions.
+            </p>
+            <a
+              href={review_url}
+              style={{
+                display: 'inline-block',
+                backgroundColor: accent_color,
+                color: 'white',
+                textDecoration: 'none',
+                fontSize: '13px',
+                fontWeight: '500',
+                padding: '10px 20px',
+                borderRadius: ri,
+              }}
+            >
+              Leave a review ★
+            </a>
           </div>
         )}
 

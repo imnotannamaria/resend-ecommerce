@@ -4,6 +4,7 @@ import { handle } from 'hono/vercel';
 import { Resend } from 'resend';
 import { OrderConfirmedEmail } from '@/app/emails/order-confirmed';
 import { OrderCreatedEmail } from '@/app/emails/order-created';
+import { OrderDeliveredEmail } from '@/app/emails/order-delivered';
 import { OrderShippedEmail } from '@/app/emails/order-shipped';
 import { env } from '@/env';
 
@@ -67,6 +68,25 @@ app.post('/orders/shipped/send', async (c) => {
     from: 'onboarding@resend.dev',
     to: body.to_email || 'anna.maria.dev.br@gmail.com',
     subject: `Your order ${body.order_id} has been shipped`,
+    html,
+  });
+  if (error) return c.json({ error }, 400);
+  return c.json({ data });
+});
+
+app.post('/orders/delivered/html', async (c) => {
+  const body = await c.req.json();
+  const html = await render(OrderDeliveredEmail(body));
+  return c.json({ html });
+});
+
+app.post('/orders/delivered/send', async (c) => {
+  const body = await c.req.json();
+  const html = await render(OrderDeliveredEmail(body));
+  const { data, error } = await resend.emails.send({
+    from: 'onboarding@resend.dev',
+    to: body.to_email || 'anna.maria.dev.br@gmail.com',
+    subject: `Your order ${body.order_id} has been delivered`,
     html,
   });
   if (error) return c.json({ error }, 400);

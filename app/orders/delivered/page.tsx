@@ -10,7 +10,7 @@ import {
   TextField,
   Tooltip,
 } from '@radix-ui/themes';
-import { Calendar, Copy, SendHorizontal, ShoppingCart } from 'lucide-react';
+import { Copy, SendHorizontal, Truck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { type CSSProperties, useState } from 'react';
@@ -28,6 +28,7 @@ type Design = {
   accentHex: string;
   radius: Radius;
   showDelivery: boolean;
+  showReview: boolean;
   showSignOff: boolean;
   showSocialLinks: boolean;
 };
@@ -53,8 +54,10 @@ const variablesSchema = z.object({
   twitter_url: optionalUrl,
   instagram_url: optionalUrl,
   customer_name: z.string().min(1, 'Required'),
-  delivery_date: z.string().min(1, 'Required'),
   order_id: z.string().min(1, 'Required'),
+  delivered_date: z.string().min(1, 'Required'),
+  delivery_note: z.string().optional(),
+  review_url: optionalUrl,
   order_name: z.string().min(1, 'Required'),
   order_quantity: z.string().min(1, 'Required'),
   order_single_price: z.string().min(1, 'Required'),
@@ -74,7 +77,17 @@ function computeTotal(
   return '';
 }
 
-export default function CreatedOrder() {
+function formatDate(value: string | undefined) {
+  if (!value) return undefined;
+  const [year, month, day] = value.split('-').map(Number);
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(new Date(year, month - 1, day));
+}
+
+export default function DeliveredOrder() {
   const {
     register,
     watch,
@@ -92,6 +105,7 @@ export default function CreatedOrder() {
     accentHex: '#18181b',
     radius: 'medium',
     showDelivery: true,
+    showReview: true,
     showSignOff: true,
     showSocialLinks: true,
   });
@@ -102,16 +116,6 @@ export default function CreatedOrder() {
     variables.order_single_price,
   );
 
-  function formatDate(value: string | undefined) {
-    if (!value) return undefined;
-    const [year, month, day] = value.split('-').map(Number);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    }).format(new Date(year, month - 1, day));
-  }
-
   function val(value: string | undefined, placeholder: string) {
     return { text: value || placeholder, isPlaceholder: !value };
   }
@@ -119,8 +123,10 @@ export default function CreatedOrder() {
   const v = {
     company_name: val(variables.company_name, 'COMPANY_NAME'),
     customer_name: val(variables.customer_name, 'CUSTOMER_NAME'),
-    delivery_date: val(formatDate(variables.delivery_date), 'DELIVERY_DATE'),
     order_id: val(variables.order_id, 'ORDER_ID'),
+    delivered_date: val(formatDate(variables.delivered_date), 'DELIVERED_DATE'),
+    delivery_note: variables.delivery_note || '',
+    review_url: variables.review_url || '',
     order_name: val(variables.order_name, 'PRODUCT_NAME'),
     order_quantity: val(variables.order_quantity, 'QTY'),
     order_single_price: val(variables.order_single_price, 'UNIT_PRICE'),
@@ -151,6 +157,7 @@ export default function CreatedOrder() {
       accent_color: design.accentHex,
       radius: design.radius,
       show_delivery: design.showDelivery,
+      show_review: design.showReview,
       show_sign_off: design.showSignOff,
       show_social_links: design.showSocialLinks,
     };
@@ -158,7 +165,7 @@ export default function CreatedOrder() {
 
   async function onCopy() {
     try {
-      const res = await fetch('/api/orders/created/html', {
+      const res = await fetch('/api/orders/delivered/html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(buildPayload(variables as Variables)),
@@ -173,7 +180,7 @@ export default function CreatedOrder() {
 
   async function onSend(data: Variables) {
     try {
-      const res = await fetch('/api/orders/created/send', {
+      const res = await fetch('/api/orders/delivered/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(buildPayload(data)),
@@ -199,8 +206,8 @@ export default function CreatedOrder() {
           </Link>
           <span className="text-sm text-(--gray-10)">/</span>
           <Flex align="center" gap="1">
-            <ShoppingCart size={13} className="text-(--gray-10)" />
-            <span className="text-sm font-medium">Order Created</span>
+            <Truck size={13} className="text-(--gray-10)" />
+            <span className="text-sm font-medium">Order Delivered</span>
           </Flex>
           <Badge color="green" variant="soft" size="1" radius="full">
             <span className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
@@ -280,7 +287,7 @@ export default function CreatedOrder() {
 
             <StepSection
               step={3}
-              title="Order"
+              title="Delivery"
               done={activeStep > 3}
               locked={activeStep < 3}
               open={activeStep === 3}
@@ -288,8 +295,10 @@ export default function CreatedOrder() {
               onNext={async () => {
                 const ok = await trigger([
                   'customer_name',
-                  'delivery_date',
                   'order_id',
+                  'delivered_date',
+                  'delivery_note',
+                  'review_url',
                   'order_name',
                   'order_quantity',
                   'order_single_price',
@@ -312,16 +321,6 @@ export default function CreatedOrder() {
                   />
                 </FormField>
                 <FormField
-                  label="Delivery date"
-                  required
-                  error={errors.delivery_date?.message}
-                >
-                  <DateInput
-                    value={variables.delivery_date}
-                    {...register('delivery_date')}
-                  />
-                </FormField>
-                <FormField
                   label="Order ID"
                   required
                   error={errors.order_id?.message}
@@ -330,6 +329,36 @@ export default function CreatedOrder() {
                     size="2"
                     placeholder="ORD-1234"
                     {...register('order_id')}
+                  />
+                </FormField>
+                <FormField
+                  label="Delivered on"
+                  required
+                  error={errors.delivered_date?.message}
+                >
+                  <DateInput
+                    value={variables.delivered_date}
+                    {...register('delivered_date')}
+                  />
+                </FormField>
+                <FormField
+                  label="Delivery note"
+                  error={errors.delivery_note?.message}
+                >
+                  <TextField.Root
+                    size="2"
+                    placeholder="Left at front door"
+                    {...register('delivery_note')}
+                  />
+                </FormField>
+                <FormField
+                  label="Review URL"
+                  error={errors.review_url?.message}
+                >
+                  <TextField.Root
+                    size="2"
+                    placeholder="https://acme.com/reviews/..."
+                    {...register('review_url')}
                   />
                 </FormField>
                 <Separator size="4" />
@@ -400,10 +429,10 @@ export default function CreatedOrder() {
 
             <div className="px-12 pt-10 pb-8 text-center border-b border-zinc-100">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-5 bg-(--accent)">
-                <ShoppingCart size={20} stroke="white" strokeWidth={2} />
+                <Truck size={20} stroke="white" strokeWidth={2} />
               </div>
               <h1 className="text-2xl font-bold mb-2 tracking-tight text-(--accent)">
-                Order confirmed
+                Your order has arrived!
               </h1>
               <p className="text-zinc-400 text-xs tracking-widest uppercase font-medium">
                 Order #{ph(v.order_id)}
@@ -415,26 +444,60 @@ export default function CreatedOrder() {
                 Hi {ph(v.customer_name)},
               </p>
               <p className="text-zinc-500 leading-relaxed mb-8">
-                Thank you for your order. We've received it and will send a
-                shipping notification once your items are on the way.
+                Your package has been delivered. We hope you love your order! If
+                you have any questions or concerns, don't hesitate to reach out.
               </p>
 
               {design.showDelivery && (
                 <div
-                  className={`flex items-start gap-3 bg-zinc-50 border border-zinc-100 px-5 py-4 mb-8 ${previewInnerRadius[design.radius]}`}
+                  className={`bg-zinc-50 border border-zinc-100 px-5 py-4 mb-8 ${previewInnerRadius[design.radius]}`}
                 >
-                  <Calendar
-                    size={16}
-                    className="mt-0.5 shrink-0 text-zinc-500"
-                  />
-                  <div>
-                    <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-0.5">
-                      Expected delivery
-                    </p>
-                    <p className="text-zinc-800 font-medium">
-                      {ph(v.delivery_date)}
-                    </p>
+                  <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-3">
+                    Delivery confirmation
+                  </p>
+                  <div
+                    className={`flex items-center justify-between ${v.delivery_note ? 'mb-2' : ''}`}
+                  >
+                    <span className="text-zinc-500 text-[13px]">
+                      Delivered on
+                    </span>
+                    <span className="font-semibold text-zinc-800 text-[13px]">
+                      {ph(v.delivered_date)}
+                    </span>
                   </div>
+                  {v.delivery_note && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-zinc-500 text-[13px]">Note</span>
+                      <span className="font-medium text-zinc-700 text-[13px]">
+                        {v.delivery_note}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {design.showReview && (
+                <div
+                  className={`text-center bg-zinc-50 border border-zinc-100 px-5 py-6 mb-8 ${previewInnerRadius[design.radius]}`}
+                >
+                  <p className="text-[15px] font-semibold text-zinc-900 mb-1">
+                    Enjoying your purchase?
+                  </p>
+                  <p className="text-zinc-500 text-[13px] mb-4 leading-relaxed">
+                    Your feedback helps other customers make better decisions.
+                  </p>
+                  <a
+                    href={v.review_url || '#'}
+                    className="inline-block text-[13px] font-medium px-5 py-2.5 text-white bg-(--accent) no-underline"
+                    style={{
+                      borderRadius:
+                        previewInnerRadius[design.radius] === 'rounded-none'
+                          ? '0'
+                          : undefined,
+                    }}
+                  >
+                    Leave a review ★
+                  </a>
                 </div>
               )}
 
@@ -563,9 +626,14 @@ export default function CreatedOrder() {
           radius={design.radius}
           sections={[
             {
-              label: 'Delivery date',
+              label: 'Delivery confirmation',
               key: 'showDelivery',
               value: design.showDelivery,
+            },
+            {
+              label: 'Review CTA',
+              key: 'showReview',
+              value: design.showReview,
             },
             {
               label: 'Sign-off',
