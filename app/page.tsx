@@ -73,7 +73,7 @@ const EMAILS = [
 const ACTIONS = [
   {
     icon: Copy,
-    label: 'Copy HTML',
+    label: ' HTML',
     description:
       'Renders the email template server-side and copies the raw HTML to your clipboard — ready to paste directly into the Resend API or any other email provider.',
   },

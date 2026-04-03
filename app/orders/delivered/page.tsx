@@ -196,10 +196,10 @@ export default function DeliveredOrder() {
 
   return (
     <div
-      className="flex flex-col h-[calc(100vh-3.5rem)]"
+      className="flex flex-col lg:h-[calc(100vh-3.5rem)]"
       style={{ '--accent': design.accentColor } as CSSProperties}
     >
-      <div className="flex items-center justify-between px-5 py-3 border-b border-(--gray-5) shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-(--gray-5) shrink-0">
         <Flex align="center" gap="2">
           <Link href="/">
             <span className="text-sm text-(--gray-10) hover:text-(--gray-12) transition-colors">
@@ -216,7 +216,7 @@ export default function DeliveredOrder() {
             Live preview
           </Badge>
         </Flex>
-        <Flex gap="2">
+        <div className="flex gap-2 w-full sm:w-auto">
           <Tooltip content="Copy rendered HTML — paste directly into the Resend API">
             <Button
               variant="soft"
@@ -236,7 +236,7 @@ export default function DeliveredOrder() {
                 : 'Fill in all required fields before sending'
             }
           >
-            <span>
+            <span style={{ flex: 1, display: 'flex' }}>
               <Button
                 variant="solid"
                 color="gray"
@@ -251,11 +251,11 @@ export default function DeliveredOrder() {
               </Button>
             </span>
           </Tooltip>
-        </Flex>
+        </div>
       </div>
 
-      <div className="flex flex-1 min-h-0">
-        <div className="w-64 shrink-0 border-r border-(--gray-5) flex flex-col">
+      <div className="flex flex-col lg:flex-row flex-1 lg:min-h-0 overflow-auto lg:overflow-hidden">
+        <div className="w-full lg:w-64 shrink-0 border-b lg:border-b-0 lg:border-r border-(--gray-5) flex flex-col">
           <ScrollArea className="flex-1">
             <StepSection
               step={1}

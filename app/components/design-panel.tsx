@@ -62,7 +62,7 @@ export function DesignPanel({
   onSectionChange,
 }: DesignPanelProps) {
   return (
-    <div className="w-56 shrink-0 border-l border-(--gray-5) flex flex-col">
+    <div className="w-full lg:w-56 shrink-0 border-t lg:border-t-0 lg:border-l border-(--gray-5) flex flex-col">
       <ScrollArea className="flex-1">
         <Flex direction="column" gap="6" p="4">
           <Flex direction="column" gap="3">
