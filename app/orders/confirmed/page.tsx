@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { BrandStep } from '@/app/components/brand-step';
+import { DemoNotice } from '@/app/components/demo-notice';
 import { DesignPanel, type Radius } from '@/app/components/design-panel';
 import { FormField } from '@/app/components/form-field';
 import { StepSection } from '@/app/components/step-section';
@@ -381,6 +382,7 @@ export default function ConfirmedOrder() {
               </Flex>
             </StepSection>
           </ScrollArea>
+          <DemoNotice />
         </div>
 
         <div className="flex-1 bg-(--gray-2) overflow-auto flex items-start justify-center py-8 px-6">
