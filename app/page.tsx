@@ -89,7 +89,7 @@ export default function Home() {
   return (
     <main className="min-h-screen flex flex-col">
       <div className="flex-1">
-        <section className="flex flex-col items-center text-center px-6 pt-24 pb-20 gap-6 max-w-3xl mx-auto">
+        <section className="flex flex-col items-center text-center px-6 pt-16 pb-14 gap-5 max-w-3xl mx-auto sm:pt-20 sm:pb-16 sm:gap-6 md:pt-24 md:pb-20">
           <div className="w-12 h-12 bg-(--gray-12) rounded-2xl flex items-center justify-center mb-2">
             <svg
               width="24"
@@ -113,16 +113,16 @@ export default function Home() {
             Open-source e-commerce email templates
           </Badge>
 
-          <h1 className="text-5xl font-bold tracking-tight leading-tight">
+          <h1 className="text-3xl font-bold tracking-tight leading-tight sm:text-4xl md:text-5xl">
             Transactional emails
             <br />
             for e-commerce
           </h1>
-          <p className="text-(--gray-10) text-lg leading-relaxed max-w-xl">
+          <p className="text-(--gray-10) text-base leading-relaxed max-w-xl sm:text-lg">
             A ready-to-use starter kit with order email templates built with
             React Email and Resend. Customize, preview, and send in minutes.
           </p>
-          <div className="flex items-center justify-between gap-4 mt-2">
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-2 sm:gap-4">
             <Button asChild size="3" color="gray" highContrast>
               <Link href="/orders/created">
                 Get Started <ArrowRight size={14} />
@@ -253,7 +253,7 @@ export default function Home() {
       </div>
 
       <footer className="border-t border-(--gray-5) px-4 py-8">
-        <div className="w-full mx-auto flex items-center justify-between gap-8">
+        <div className="w-full mx-auto flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
           <div className="flex flex-col gap-1">
             <p className="text-sm">
               Developed by{' '}
