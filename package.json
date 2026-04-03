@@ -17,6 +17,7 @@
     "@radix-ui/themes": "^3.3.0",
     "@react-email/render": "^2.0.4",
     "@tailwindcss/postcss": "^4.2.2",
+    "@vercel/analytics": "^1.6.1",
     "geist": "^1.7.0",
     "hono": "^4.12.9",
     "lucide-react": "^1.7.0",

@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
 import '@radix-ui/themes/styles.css';
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en" className={GeistSans.variable}>
       <body suppressHydrationWarning>
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
