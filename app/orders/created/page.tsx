@@ -11,6 +11,7 @@ import { useState, type CSSProperties } from "react"
 import Link from "next/link"
 import { FormField } from "@/app/components/form-field"
 import { StepSection } from "@/app/components/step-section"
+import { DateInput } from "@/app/components/date-input"
 
 type Radius = "sharp" | "medium" | "large"
 type Design = {
@@ -225,7 +226,7 @@ export default function CreatedOrder() {
             >
               <Flex direction="column" gap="3">
                 <FormField label="Company name" required error={errors.company_name?.message}>
-                  <TextField.Root size="2" {...register("company_name")} />
+                  <TextField.Root size="2" placeholder="Acme Inc." {...register("company_name")} />
                 </FormField>
                 <FormField label="Unsubscribe URL" error={errors.unsubscribe_url?.message}>
                   <TextField.Root size="2" placeholder="https://" {...register("unsubscribe_url")} />
@@ -257,26 +258,26 @@ export default function CreatedOrder() {
             >
               <Flex direction="column" gap="3">
                 <FormField label="Customer name" required error={errors.customer_name?.message}>
-                  <TextField.Root size="2" {...register("customer_name")} />
+                  <TextField.Root size="2" placeholder="Joanne G" {...register("customer_name")} />
                 </FormField>
                 <FormField label="Delivery date" required error={errors.delivery_date?.message}>
-                  <TextField.Root size="2" type="date" {...register("delivery_date")} />
+                  <DateInput value={variables.delivery_date} {...register("delivery_date")} />
                 </FormField>
                 <FormField label="Order ID" required error={errors.order_id?.message}>
-                  <TextField.Root size="2" {...register("order_id")} />
+                  <TextField.Root size="2" placeholder="ORD-1234" {...register("order_id")} />
                 </FormField>
                 <Separator size="4" />
                 <FormField label="Product name" required error={errors.order_name?.message}>
-                  <TextField.Root size="2" {...register("order_name")} />
+                  <TextField.Root size="2" placeholder="Wireless Headphones" {...register("order_name")} />
                 </FormField>
                 <FormField label="Quantity" required error={errors.order_quantity?.message}>
-                  <TextField.Root size="2" type="number" {...register("order_quantity")} />
+                  <TextField.Root size="2" placeholder="1" type="number" {...register("order_quantity")} />
                 </FormField>
                 <FormField label="Unit price" required error={errors.order_single_price?.message}>
-                  <TextField.Root size="2" type="number" {...register("order_single_price")} />
+                  <TextField.Root size="2" placeholder="$99.00" type="number" {...register("order_single_price")} />
                 </FormField>
                 <FormField label="Total price" required error={errors.order_price?.message}>
-                  <TextField.Root size="2" type="number" {...register("order_price")} />
+                  <TextField.Root size="2" placeholder="$99.00" type="number" {...register("order_price")} />
                 </FormField>
                 <FormField label="Product image URL" error={errors.order_image?.message}>
                   <TextField.Root size="2" placeholder="https://" {...register("order_image")} />
