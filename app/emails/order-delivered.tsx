@@ -23,15 +23,7 @@ interface OrderDeliveredEmailProps {
   show_social_links?: boolean;
 }
 
-function formatDate(value: string | undefined) {
-  if (!value) return value;
-  const [year, month, day] = value.split('-').map(Number);
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(year, month - 1, day));
-}
+import { formatDate } from '@/app/lib/utils';
 
 const radiusMap = { sharp: '0px', medium: '8px', large: '16px' };
 const radiusInnerMap = { sharp: '0px', medium: '6px', large: '10px' };

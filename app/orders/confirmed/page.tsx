@@ -22,6 +22,7 @@ import { DemoNotice } from '@/app/components/demo-notice';
 import { DesignPanel, type Radius } from '@/app/components/design-panel';
 import { FormField } from '@/app/components/form-field';
 import { StepSection } from '@/app/components/step-section';
+import { computeTotal } from '@/app/lib/utils';
 
 type Design = {
   accentColor: string;
@@ -62,17 +63,6 @@ const variablesSchema = z.object({
 });
 
 type Variables = z.infer<typeof variablesSchema>;
-
-function computeTotal(
-  qty: string | undefined,
-  unit: string | undefined,
-): string {
-  const q = parseFloat(qty || '');
-  const u = parseFloat(unit || '');
-  if (!Number.isNaN(q) && !Number.isNaN(u) && q > 0 && u > 0)
-    return (q * u).toFixed(2);
-  return '';
-}
 
 export default function ConfirmedOrder() {
   const {

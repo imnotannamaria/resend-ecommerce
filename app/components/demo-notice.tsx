@@ -1,5 +1,3 @@
-'use client';
-
 import { Callout } from '@radix-ui/themes';
 import { Info } from 'lucide-react';
 

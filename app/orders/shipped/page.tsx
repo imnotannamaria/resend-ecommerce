@@ -23,6 +23,7 @@ import { DemoNotice } from '@/app/components/demo-notice';
 import { DesignPanel, type Radius } from '@/app/components/design-panel';
 import { FormField } from '@/app/components/form-field';
 import { StepSection } from '@/app/components/step-section';
+import { computeTotal, formatDate } from '@/app/lib/utils';
 
 type Design = {
   accentColor: string;
@@ -67,27 +68,6 @@ const variablesSchema = z.object({
 });
 
 type Variables = z.infer<typeof variablesSchema>;
-
-function computeTotal(
-  qty: string | undefined,
-  unit: string | undefined,
-): string {
-  const q = parseFloat(qty || '');
-  const u = parseFloat(unit || '');
-  if (!Number.isNaN(q) && !Number.isNaN(u) && q > 0 && u > 0)
-    return (q * u).toFixed(2);
-  return '';
-}
-
-function formatDate(value: string | undefined) {
-  if (!value) return undefined;
-  const [year, month, day] = value.split('-').map(Number);
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(year, month - 1, day));
-}
 
 export default function ShippedOrder() {
   const {
