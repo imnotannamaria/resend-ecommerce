@@ -130,7 +130,7 @@ export default function Home() {
             </Button>
             <Button asChild size="3" variant="soft" color="gray">
               <Link
-                href="https://www.notion.so/imnotannamaria/Resend-E-commerce-32d9c040a133803490edc3161084af0d?source=copy_link"
+                href="https://imnotannamaria.notion.site/Resend-E-commerce-32d9c040a133803490edc3161084af0d?source=copy_link"
                 target="_blank"
               >
                 Documentation <Book size={14} />
