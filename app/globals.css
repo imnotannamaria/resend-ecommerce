@@ -1,13 +1,18 @@
 @import "tailwindcss";
 
-:root, .light {
-  --default-font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --heading-font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+:root,
+.light {
+  --default-font-family:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --heading-font-family:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --swatch-ring: #18181b;
 }
 
 .dark {
-  --default-font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --heading-font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --default-font-family:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --heading-font-family:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --swatch-ring: #ffffff;
 }

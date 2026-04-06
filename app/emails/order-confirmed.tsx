@@ -20,6 +20,20 @@ interface OrderConfirmedEmailProps {
   show_social_links?: boolean;
 }
 
+import {
+  Body,
+  Column,
+  Container,
+  Head,
+  Html,
+  Img,
+  Link,
+  Preview,
+  Row,
+  Section,
+  Text,
+} from '@react-email/components';
+
 const radiusMap = { sharp: '0px', medium: '8px', large: '16px' };
 const radiusInnerMap = { sharp: '0px', medium: '6px', large: '10px' };
 
@@ -49,337 +63,343 @@ export function OrderConfirmedEmail({
   const ri = radiusInnerMap[radius];
 
   return (
-    <div
-      style={{
-        fontFamily: 'sans-serif',
-        fontSize: '14px',
-        color: '#3f3f46',
-        maxWidth: '600px',
-        margin: '0 auto',
-        backgroundColor: bg_color,
-        border: '1px solid #e4e4e7',
-        borderRadius: r,
-        overflow: 'hidden',
-      }}
-    >
-      <div style={{ height: '4px', backgroundColor: accent_color }} />
-
-      <div
+    <Html lang="en">
+      <Head />
+      <Preview>
+        Payment confirmed for order #{order_id} — we're already preparing your
+        order.
+      </Preview>
+      <Body
         style={{
-          padding: '40px 48px 32px',
-          textAlign: 'center',
-          borderBottom: '1px solid #f4f4f5',
+          backgroundColor: '#f4f4f5',
+          margin: '0',
+          padding: '32px 0',
+          fontFamily: 'sans-serif',
+          fontSize: '14px',
+          color: '#3f3f46',
         }}
       >
-        <table
-          cellPadding="0"
-          cellSpacing="0"
-          style={{ margin: '0 auto 20px' }}
-        >
-          <tbody>
-            <tr>
-              <td
-                style={{
-                  width: '48px',
-                  height: '48px',
-                  borderRadius: '50%',
-                  backgroundColor: accent_color,
-                  textAlign: 'center',
-                  verticalAlign: 'middle',
-                  fontSize: '22px',
-                  lineHeight: '1',
-                  paddingBottom: '2px',
-                  color: 'white',
-                  fontWeight: 'bold',
-                }}
-              >
-                ✔
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <h1
+        <Container
           style={{
-            fontSize: '24px',
-            fontWeight: '700',
-            color: accent_color,
-            margin: '0 0 8px',
-            letterSpacing: '-0.025em',
+            maxWidth: '600px',
+            backgroundColor: bg_color,
+            border: '1px solid #e4e4e7',
+            borderRadius: r,
+            overflow: 'hidden',
           }}
         >
-          Payment confirmed
-        </h1>
-        <p
-          style={{
-            fontSize: '11px',
-            color: '#a1a1aa',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            fontWeight: '500',
-            margin: 0,
-          }}
-        >
-          Order #{order_id}
-        </p>
-      </div>
+          <div style={{ height: '4px', backgroundColor: accent_color }} />
 
-      <div style={{ padding: '40px 48px' }}>
-        <p style={{ color: '#27272a', fontWeight: '500', margin: '0 0 4px' }}>
-          Hi {customer_name},
-        </p>
-        <p
-          style={{ color: '#71717a', lineHeight: '1.625', margin: '0 0 32px' }}
-        >
-          Great news! Your payment has been confirmed and we're already
-          preparing your order. You'll receive a shipping notification as soon
-          as it's on the way.
-        </p>
-
-        {show_payment && (
-          <div
+          {/* Header */}
+          <Section
             style={{
-              backgroundColor: '#fafafa',
-              border: '1px solid #f4f4f5',
-              borderRadius: ri,
-              padding: '16px 20px',
-              marginBottom: '32px',
+              padding: '40px 48px 32px',
+              textAlign: 'center',
+              borderBottom: '1px solid #f4f4f5',
             }}
           >
-            <p
+            <Section style={{ marginBottom: '20px' }}>
+              <Row>
+                <Column />
+                <Column
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    backgroundColor: accent_color,
+                    textAlign: 'center',
+                    verticalAlign: 'middle',
+                    fontSize: '22px',
+                    lineHeight: '1',
+                    paddingBottom: '2px',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  ✔
+                </Column>
+                <Column />
+              </Row>
+            </Section>
+            <Text
+              style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: accent_color,
+                margin: '0 0 8px',
+                letterSpacing: '-0.025em',
+              }}
+            >
+              Payment confirmed
+            </Text>
+            <Text
+              style={{
+                fontSize: '11px',
+                color: '#a1a1aa',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                fontWeight: '500',
+                margin: 0,
+              }}
+            >
+              Order #{order_id}
+            </Text>
+          </Section>
+
+          {/* Body */}
+          <Section style={{ padding: '40px 48px' }}>
+            <Text
+              style={{ color: '#27272a', fontWeight: '500', margin: '0 0 4px' }}
+            >
+              Hi {customer_name},
+            </Text>
+            <Text
+              style={{
+                color: '#71717a',
+                lineHeight: '1.625',
+                margin: '0 0 32px',
+              }}
+            >
+              Great news! Your payment has been confirmed and we're already
+              preparing your order. You'll receive a shipping notification as
+              soon as it's on the way.
+            </Text>
+
+            {show_payment && (
+              <Section
+                style={{
+                  backgroundColor: '#fafafa',
+                  border: '1px solid #f4f4f5',
+                  borderRadius: ri,
+                  padding: '16px 20px',
+                  marginBottom: '32px',
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    color: '#71717a',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    margin: '0 0 8px',
+                  }}
+                >
+                  Payment details
+                </Text>
+                <Section>
+                  <Row>
+                    <Column style={{ color: '#27272a', fontWeight: '500' }}>
+                      {payment_method}
+                    </Column>
+                    <Column
+                      style={{
+                        color: '#27272a',
+                        fontWeight: '600',
+                        textAlign: 'right',
+                        whiteSpace: 'nowrap',
+                        fontVariantNumeric: 'tabular-nums',
+                      }}
+                    >
+                      ${order_price}
+                    </Column>
+                  </Row>
+                </Section>
+              </Section>
+            )}
+
+            <Text
               style={{
                 fontSize: '11px',
                 fontWeight: '600',
-                color: '#71717a',
+                color: '#a1a1aa',
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                margin: '0 0 8px',
+                letterSpacing: '0.1em',
+                margin: '0 0 16px',
               }}
             >
-              Payment details
-            </p>
-            <table width="100%" cellPadding="0" cellSpacing="0">
-              <tbody>
-                <tr>
-                  <td style={{ color: '#27272a', fontWeight: '500' }}>
-                    {payment_method}
-                  </td>
-                  <td
-                    style={{
-                      color: '#27272a',
-                      fontWeight: '600',
-                      textAlign: 'right',
-                      whiteSpace: 'nowrap',
-                      fontVariantNumeric: 'tabular-nums',
-                    }}
-                  >
-                    ${order_price}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        )}
+              Order summary
+            </Text>
 
-        <p
-          style={{
-            fontSize: '11px',
-            fontWeight: '600',
-            color: '#a1a1aa',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            margin: '0 0 16px',
-          }}
-        >
-          Order summary
-        </p>
-
-        <table
-          width="100%"
-          cellPadding="0"
-          cellSpacing="0"
-          style={{ borderTop: '1px solid #f4f4f5' }}
-        >
-          <tbody>
-            <tr>
-              <td
-                style={{
-                  paddingTop: '16px',
-                  paddingBottom: '16px',
-                  verticalAlign: 'middle',
-                  width: '80px',
-                }}
-              >
-                {order_image ? (
-                  // biome-ignore lint/performance/noImgElement: email templates require plain <img>
-                  <img
-                    alt="Order product"
-                    src={order_image}
-                    width={64}
-                    height={64}
-                    style={{
-                      borderRadius: ri,
-                      objectFit: 'cover',
-                      border: '1px solid #f4f4f5',
-                      display: 'block',
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: '64px',
-                      height: '64px',
-                      borderRadius: ri,
-                      backgroundColor: '#f4f4f5',
-                      border: '1px solid #e4e4e7',
-                      textAlign: 'center',
-                      lineHeight: '64px',
-                      color: '#d4d4d8',
-                      fontSize: '11px',
-                      fontFamily: 'monospace',
-                    }}
-                  >
-                    IMG
-                  </div>
-                )}
-              </td>
-              <td
-                style={{
-                  paddingTop: '16px',
-                  paddingBottom: '16px',
-                  paddingLeft: '16px',
-                  verticalAlign: 'middle',
-                }}
-              >
-                <p
+            {/* Order item */}
+            <Section
+              style={{ borderTop: '1px solid #f4f4f5', paddingTop: '16px' }}
+            >
+              <Row>
+                <Column
                   style={{
-                    fontWeight: '500',
-                    color: '#18181b',
-                    margin: '0 0 2px',
+                    paddingBottom: '16px',
+                    verticalAlign: 'middle',
+                    width: '80px',
                   }}
                 >
-                  {order_name}
-                </p>
-                <p style={{ color: '#a1a1aa', fontSize: '12px', margin: 0 }}>
-                  Qty: {order_quantity}
-                </p>
-              </td>
-              <td
-                style={{
-                  paddingTop: '16px',
-                  paddingBottom: '16px',
-                  verticalAlign: 'middle',
-                  textAlign: 'right',
-                  fontWeight: '600',
-                  color: '#18181b',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {order_single_price}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                  {order_image ? (
+                    <Img
+                      alt="Order product"
+                      src={order_image}
+                      width={64}
+                      height={64}
+                      style={{
+                        borderRadius: ri,
+                        objectFit: 'cover',
+                        border: '1px solid #f4f4f5',
+                        display: 'block',
+                      }}
+                    />
+                  ) : (
+                    <Text
+                      style={{
+                        width: '64px',
+                        height: '64px',
+                        borderRadius: ri,
+                        backgroundColor: '#f4f4f5',
+                        border: '1px solid #e4e4e7',
+                        textAlign: 'center',
+                        lineHeight: '64px',
+                        color: '#d4d4d8',
+                        fontSize: '11px',
+                        fontFamily: 'monospace',
+                        margin: 0,
+                      }}
+                    >
+                      IMG
+                    </Text>
+                  )}
+                </Column>
+                <Column
+                  style={{
+                    paddingBottom: '16px',
+                    paddingLeft: '16px',
+                    verticalAlign: 'middle',
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontWeight: '500',
+                      color: '#18181b',
+                      margin: '0 0 2px',
+                    }}
+                  >
+                    {order_name}
+                  </Text>
+                  <Text
+                    style={{ color: '#a1a1aa', fontSize: '12px', margin: 0 }}
+                  >
+                    Qty: {order_quantity}
+                  </Text>
+                </Column>
+                <Column
+                  style={{
+                    paddingBottom: '16px',
+                    verticalAlign: 'middle',
+                    textAlign: 'right',
+                    fontWeight: '600',
+                    color: '#18181b',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {order_single_price}
+                </Column>
+              </Row>
+            </Section>
 
-        <table
-          width="100%"
-          cellPadding="0"
-          cellSpacing="0"
-          style={{ borderTop: '1px solid #f4f4f5' }}
-        >
-          <tbody>
-            <tr>
-              <td
-                style={{
-                  paddingTop: '16px',
-                  paddingBottom: '8px',
-                  color: '#71717a',
-                }}
-              >
-                Subtotal
-              </td>
-              <td
-                style={{
-                  paddingTop: '16px',
-                  paddingBottom: '8px',
-                  color: '#71717a',
-                  textAlign: 'right',
-                }}
-              >
-                {order_price}
-              </td>
-            </tr>
-            <tr>
-              <td
-                style={{
-                  paddingTop: '8px',
-                  fontWeight: '600',
-                  color: '#18181b',
-                  fontSize: '16px',
-                  borderTop: '1px solid #f4f4f5',
-                }}
-              >
-                Total
-              </td>
-              <td
-                style={{
-                  paddingTop: '8px',
-                  fontWeight: '600',
-                  color: '#18181b',
-                  fontSize: '16px',
-                  textAlign: 'right',
-                  borderTop: '1px solid #f4f4f5',
-                }}
-              >
-                {order_price}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            {/* Price summary */}
+            <Section style={{ borderTop: '1px solid #f4f4f5' }}>
+              <Row>
+                <Column
+                  style={{
+                    paddingTop: '16px',
+                    paddingBottom: '8px',
+                    color: '#71717a',
+                  }}
+                >
+                  Subtotal
+                </Column>
+                <Column
+                  style={{
+                    paddingTop: '16px',
+                    paddingBottom: '8px',
+                    color: '#71717a',
+                    textAlign: 'right',
+                  }}
+                >
+                  {order_price}
+                </Column>
+              </Row>
+              <Row>
+                <Column
+                  style={{
+                    paddingTop: '8px',
+                    fontWeight: '600',
+                    color: '#18181b',
+                    fontSize: '16px',
+                    borderTop: '1px solid #f4f4f5',
+                  }}
+                >
+                  Total
+                </Column>
+                <Column
+                  style={{
+                    paddingTop: '8px',
+                    fontWeight: '600',
+                    color: '#18181b',
+                    fontSize: '16px',
+                    textAlign: 'right',
+                    borderTop: '1px solid #f4f4f5',
+                  }}
+                >
+                  {order_price}
+                </Column>
+              </Row>
+            </Section>
+          </Section>
 
-      {show_sign_off && (
-        <div
-          style={{ padding: '32px 48px 40px', borderTop: '1px solid #f4f4f5' }}
-        >
-          <p
-            style={{
-              color: '#71717a',
-              fontSize: '14px',
-              lineHeight: '1.625',
-              margin: '0 0 20px',
-            }}
-          >
-            Questions about your order? Reply to this email or visit our{' '}
-            <a
-              href={help_center_url}
+          {/* Sign-off */}
+          {show_sign_off && (
+            <Section
               style={{
-                color: accent_color,
-                textDecoration: 'underline',
-                textUnderlineOffset: '2px',
+                padding: '32px 48px 40px',
+                borderTop: '1px solid #f4f4f5',
               }}
             >
-              Help Center
-            </a>
-            .
-          </p>
-          <p style={{ color: '#27272a', fontWeight: '500', margin: 0 }}>
-            {company_name}
-          </p>
-        </div>
-      )}
+              <Text
+                style={{
+                  color: '#71717a',
+                  fontSize: '14px',
+                  lineHeight: '1.625',
+                  margin: '0 0 20px',
+                }}
+              >
+                Questions about your order? Reply to this email or visit our{' '}
+                <Link
+                  href={help_center_url}
+                  style={{
+                    color: accent_color,
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '2px',
+                  }}
+                >
+                  Help Center
+                </Link>
+                .
+              </Text>
+              <Text style={{ color: '#27272a', fontWeight: '500', margin: 0 }}>
+                {company_name}
+              </Text>
+            </Section>
+          )}
 
-      <div
-        style={{
-          backgroundColor: '#fafafa',
-          borderTop: '1px solid #f4f4f5',
-          padding: '24px 48px',
-        }}
-      >
-        <table width="100%" cellPadding="0" cellSpacing="0">
-          <tbody>
-            <tr>
-              <td style={{ verticalAlign: 'middle' }}>
-                <p
+          {/* Footer */}
+          <Section
+            style={{
+              backgroundColor: '#fafafa',
+              borderTop: '1px solid #f4f4f5',
+              padding: '24px 48px',
+            }}
+          >
+            <Row>
+              <Column style={{ verticalAlign: 'middle' }}>
+                <Text
                   style={{
                     fontSize: '12px',
                     color: '#a1a1aa',
@@ -388,7 +408,7 @@ export function OrderConfirmedEmail({
                   }}
                 >
                   You received this email because you placed an order.{' '}
-                  <a
+                  <Link
                     href={unsubscribe_url}
                     style={{
                       textDecoration: 'underline',
@@ -397,88 +417,68 @@ export function OrderConfirmedEmail({
                     }}
                   >
                     Unsubscribe
-                  </a>
-                </p>
-              </td>
+                  </Link>
+                </Text>
+              </Column>
               {show_social_links && hasSocial && (
-                <td style={{ verticalAlign: 'middle', textAlign: 'right' }}>
-                  <table
-                    cellPadding="0"
-                    cellSpacing="0"
-                    style={{ display: 'inline-table' }}
-                  >
-                    <tbody>
-                      <tr>
-                        {twitter_url && (
-                          <td style={{ paddingLeft: '8px' }}>
-                            <a
-                              href={twitter_url}
-                              aria-label="Twitter"
-                              style={{ textDecoration: 'none' }}
+                <Column style={{ verticalAlign: 'middle', textAlign: 'right' }}>
+                  <Section>
+                    <Row>
+                      {twitter_url && (
+                        <Column style={{ paddingLeft: '8px', width: '36px' }}>
+                          <Link
+                            href={twitter_url}
+                            aria-label="Twitter"
+                            style={{ textDecoration: 'none' }}
+                          >
+                            <div
+                              style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '50%',
+                                border: '1px solid #e4e4e7',
+                                textAlign: 'center',
+                                lineHeight: '28px',
+                                fontSize: '13px',
+                                color: '#a1a1aa',
+                              }}
                             >
-                              <table cellPadding="0" cellSpacing="0">
-                                <tbody>
-                                  <tr>
-                                    <td
-                                      style={{
-                                        width: '28px',
-                                        height: '28px',
-                                        borderRadius: '50%',
-                                        border: '1px solid #e4e4e7',
-                                        textAlign: 'center',
-                                        verticalAlign: 'middle',
-                                        fontSize: '13px',
-                                        color: '#a1a1aa',
-                                      }}
-                                    >
-                                      𝕏
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </a>
-                          </td>
-                        )}
-                        {instagram_url && (
-                          <td style={{ paddingLeft: '8px' }}>
-                            <a
-                              href={instagram_url}
-                              aria-label="Instagram"
-                              style={{ textDecoration: 'none' }}
+                              𝕏
+                            </div>
+                          </Link>
+                        </Column>
+                      )}
+                      {instagram_url && (
+                        <Column style={{ paddingLeft: '8px', width: '36px' }}>
+                          <Link
+                            href={instagram_url}
+                            aria-label="Instagram"
+                            style={{ textDecoration: 'none' }}
+                          >
+                            <div
+                              style={{
+                                width: '28px',
+                                height: '28px',
+                                borderRadius: '50%',
+                                border: '1px solid #e4e4e7',
+                                textAlign: 'center',
+                                lineHeight: '28px',
+                                fontSize: '12px',
+                              }}
                             >
-                              <table cellPadding="0" cellSpacing="0">
-                                <tbody>
-                                  <tr>
-                                    <td
-                                      style={{
-                                        width: '28px',
-                                        height: '28px',
-                                        borderRadius: '50%',
-                                        border: '1px solid #e4e4e7',
-                                        textAlign: 'center',
-                                        verticalAlign: 'middle',
-                                        fontSize: '12px',
-                                        lineHeight: '1',
-                                        paddingBottom: '2px',
-                                      }}
-                                    >
-                                      📷
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </a>
-                          </td>
-                        )}
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
+                              📷
+                            </div>
+                          </Link>
+                        </Column>
+                      )}
+                    </Row>
+                  </Section>
+                </Column>
               )}
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+            </Row>
+          </Section>
+        </Container>
+      </Body>
+    </Html>
   );
 }
