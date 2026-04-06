@@ -100,24 +100,24 @@ export function OrderCreatedEmail({
           >
             <Section style={{ marginBottom: '20px' }}>
               <Row>
-                <Column />
-                <Column
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '50%',
-                    backgroundColor: accent_color,
-                    textAlign: 'center',
-                    verticalAlign: 'middle',
-                    fontSize: '20px',
-                    lineHeight: '1',
-                    paddingTop: '2px',
-                    paddingLeft: '5px',
-                  }}
-                >
-                  🛒
+                <Column style={{ textAlign: 'center' }}>
+                  <Text
+                    style={{
+                      display: 'inline-block',
+                      width: '48px',
+                      height: '48px',
+                      lineHeight: '48px',
+                      borderRadius: '50%',
+                      backgroundColor: accent_color,
+                      textAlign: 'center',
+                      fontSize: '20px',
+                      margin: '0',
+                      padding: '0',
+                    }}
+                  >
+                    🛒
+                  </Text>
                 </Column>
-                <Column />
               </Row>
             </Section>
             <Text

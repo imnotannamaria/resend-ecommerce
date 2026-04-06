@@ -100,25 +100,26 @@ export function OrderConfirmedEmail({
           >
             <Section style={{ marginBottom: '20px' }}>
               <Row>
-                <Column />
-                <Column
-                  style={{
-                    width: '48px',
-                    height: '48px',
-                    borderRadius: '50%',
-                    backgroundColor: accent_color,
-                    textAlign: 'center',
-                    verticalAlign: 'middle',
-                    fontSize: '22px',
-                    lineHeight: '1',
-                    paddingBottom: '2px',
-                    color: 'white',
-                    fontWeight: 'bold',
-                  }}
-                >
-                  ✔
+                <Column style={{ textAlign: 'center' }}>
+                  <Text
+                    style={{
+                      display: 'inline-block',
+                      width: '48px',
+                      height: '48px',
+                      lineHeight: '48px',
+                      borderRadius: '50%',
+                      backgroundColor: accent_color,
+                      textAlign: 'center',
+                      fontSize: '22px',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      margin: '0',
+                      padding: '0',
+                    }}
+                  >
+                    ✔
+                  </Text>
                 </Column>
-                <Column />
               </Row>
             </Section>
             <Text
