@@ -570,40 +570,21 @@ export default function ShippedOrder() {
                   <a
                     href={v.twitter_url || '#'}
                     aria-label="Twitter"
-                    className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors"
+                    className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors text-[13px] text-zinc-400"
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      fill="#a1a1aa"
-                      viewBox="0 0 24 24"
-                      aria-label="Twitter"
-                      role="img"
-                    >
-                      <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z" />
-                    </svg>
+                    𝕏
                   </a>
                   <a
                     href={v.instagram_url || '#'}
                     aria-label="Instagram"
                     className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors"
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="#a1a1aa"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-label="Instagram"
-                      role="img"
-                    >
-                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                      <circle cx="12" cy="12" r="4" />
-                      <circle cx="17.5" cy="6.5" r="0.5" fill="#a1a1aa" />
-                    </svg>
+                    <Image
+                      src="/instagram.png"
+                      alt="Instagram"
+                      width={16}
+                      height={16}
+                    />
                   </a>
                 </div>
               )}

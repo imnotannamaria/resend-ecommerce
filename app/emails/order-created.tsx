@@ -104,18 +104,25 @@ export function OrderCreatedEmail({
                   <Text
                     style={{
                       display: 'inline-block',
-                      width: '48px',
-                      height: '48px',
-                      lineHeight: '48px',
                       borderRadius: '50%',
                       backgroundColor: accent_color,
-                      textAlign: 'center',
-                      fontSize: '20px',
                       margin: '0',
-                      padding: '0',
+                      padding: '14px',
+                      lineHeight: '0',
+                      fontSize: '0',
                     }}
                   >
-                    🛒
+                    <Img
+                      src="https://resend-ecommerce.vercel.app/shopping-cart.png"
+                      alt="Shopping cart"
+                      width={20}
+                      height={20}
+                      style={{
+                        display: 'block',
+                        width: '20px',
+                        height: '20px',
+                      }}
+                    />
                   </Text>
                 </Column>
               </Row>
@@ -410,7 +417,13 @@ export function OrderCreatedEmail({
                   <Section>
                     <Row>
                       {twitter_url && (
-                        <Column style={{ paddingLeft: '8px', width: '36px' }}>
+                        <Column
+                          style={{
+                            paddingLeft: '8px',
+                            width: '36px',
+                            verticalAlign: 'middle',
+                          }}
+                        >
                           <Link
                             href={twitter_url}
                             aria-label="Twitter"
@@ -434,25 +447,45 @@ export function OrderCreatedEmail({
                         </Column>
                       )}
                       {instagram_url && (
-                        <Column style={{ paddingLeft: '8px', width: '36px' }}>
+                        <Column
+                          style={{
+                            paddingLeft: '8px',
+                            width: '36px',
+                            verticalAlign: 'middle',
+                          }}
+                        >
                           <Link
                             href={instagram_url}
                             aria-label="Instagram"
                             style={{ textDecoration: 'none' }}
                           >
-                            <div
+                            <Text
                               style={{
+                                display: 'inline-block',
                                 width: '28px',
                                 height: '28px',
                                 borderRadius: '50%',
                                 border: '1px solid #e4e4e7',
-                                textAlign: 'center',
+                                margin: '0',
+                                padding: '0',
                                 lineHeight: '28px',
-                                fontSize: '12px',
+                                textAlign: 'center',
+                                fontSize: '0',
                               }}
                             >
-                              📷
-                            </div>
+                              <Img
+                                src="https://resend-ecommerce.vercel.app/instagram.png"
+                                alt="Instagram"
+                                width={16}
+                                height={16}
+                                style={{
+                                  display: 'inline',
+                                  verticalAlign: 'middle',
+                                  width: '16px',
+                                  height: '16px',
+                                }}
+                              />
+                            </Text>
                           </Link>
                         </Column>
                       )}
