@@ -32,7 +32,7 @@ import {
   Row,
   Section,
   Text,
-} from '@react-email/components';
+} from 'react-email';
 import { formatDate } from '@/app/lib/utils';
 
 const radiusMap = { sharp: '0px', medium: '8px', large: '16px' };

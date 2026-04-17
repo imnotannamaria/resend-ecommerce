@@ -1,6 +1,6 @@
-import { render } from '@react-email/render';
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
+import { render } from 'react-email';
 import { Resend } from 'resend';
 import { OrderConfirmedEmail } from '@/app/emails/order-confirmed';
 import { OrderCreatedEmail } from '@/app/emails/order-created';

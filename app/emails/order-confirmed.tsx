@@ -32,7 +32,7 @@ import {
   Row,
   Section,
   Text,
-} from '@react-email/components';
+} from 'react-email';
 
 const radiusMap = { sharp: '0px', medium: '8px', large: '16px' };
 const radiusInnerMap = { sharp: '0px', medium: '6px', large: '10px' };
