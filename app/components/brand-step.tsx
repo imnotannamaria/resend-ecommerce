@@ -1,6 +1,6 @@
 'use client';
 
-import { Flex, Separator, TextField } from '@radix-ui/themes';
+import { Flex, TextField } from '@radix-ui/themes';
 import type React from 'react';
 import type { UseFormRegister, UseFormTrigger } from 'react-hook-form';
 import { FormField } from '@/app/components/form-field';
@@ -36,8 +36,6 @@ export function BrandStep({
           'company_name',
           'help_center_url',
           'unsubscribe_url',
-          'twitter_url',
-          'instagram_url',
         ]);
         if (ok) setActiveStep(3);
       }}
@@ -73,21 +71,6 @@ export function BrandStep({
             size="2"
             placeholder="https://acme.com/unsubscribe"
             {...register('unsubscribe_url')}
-          />
-        </FormField>
-        <Separator size="4" />
-        <FormField label="Twitter / X URL" error={errors.twitter_url?.message}>
-          <TextField.Root
-            size="2"
-            placeholder="https://twitter.com/acme"
-            {...register('twitter_url')}
-          />
-        </FormField>
-        <FormField label="Instagram URL" error={errors.instagram_url?.message}>
-          <TextField.Root
-            size="2"
-            placeholder="https://instagram.com/acme"
-            {...register('instagram_url')}
           />
         </FormField>
       </Flex>

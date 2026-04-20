@@ -5,130 +5,205 @@ import { OrderCreatedEmail } from '@/app/emails/order-created';
 import { OrderDeliveredEmail } from '@/app/emails/order-delivered';
 import { OrderShippedEmail } from '@/app/emails/order-shipped';
 
+const demoItem = {
+  name: 'Wireless Headphones',
+  quantity: 2,
+  price: 49.99,
+  image: 'https://example.com/p.png',
+};
+
 const baseOrder = {
-  company_name: 'Acme Co',
-  customer_name: 'Jane Doe',
-  order_id: 'ORD-001',
-  order_name: 'Wireless Headphones',
-  order_quantity: '2',
-  order_single_price: '$49.99',
-  order_price: '$99.98',
+  companyName: 'Acme Co',
+  customerName: 'Jane Doe',
+  orderNumber: 'ORD-001',
+  items: [demoItem],
+  subtotal: 99.98,
+  total: 99.98,
+  helpCenterUrl: 'https://acme.com/help',
+  unsubscribeUrl: 'https://acme.com/unsub',
 };
 
 describe('OrderCreatedEmail', () => {
   it('renders without crashing', async () => {
     const html = await render(
-      OrderCreatedEmail({ ...baseOrder, delivery_date: '2024-06-01' }),
+      OrderCreatedEmail({
+        ...baseOrder,
+        expectedDelivery: 'June 1, 2024',
+      }),
     );
     expect(html).toBeTruthy();
   });
 
-  it('includes order id', async () => {
+  it('includes order number', async () => {
     const html = await render(
-      OrderCreatedEmail({ ...baseOrder, delivery_date: '2024-06-01' }),
+      OrderCreatedEmail({
+        ...baseOrder,
+        expectedDelivery: 'June 1, 2024',
+      }),
     );
     expect(html).toContain('ORD-001');
   });
 
   it('includes customer name', async () => {
     const html = await render(
-      OrderCreatedEmail({ ...baseOrder, delivery_date: '2024-06-01' }),
+      OrderCreatedEmail({
+        ...baseOrder,
+        expectedDelivery: 'June 1, 2024',
+      }),
     );
     expect(html).toContain('Jane Doe');
   });
 
   it('includes product name', async () => {
     const html = await render(
-      OrderCreatedEmail({ ...baseOrder, delivery_date: '2024-06-01' }),
+      OrderCreatedEmail({
+        ...baseOrder,
+        expectedDelivery: 'June 1, 2024',
+      }),
     );
     expect(html).toContain('Wireless Headphones');
   });
 
-  it('hides delivery section when show_delivery is false', async () => {
+  it('includes expected delivery', async () => {
     const html = await render(
       OrderCreatedEmail({
         ...baseOrder,
-        delivery_date: '2024-06-01',
-        show_delivery: false,
+        expectedDelivery: 'Monday, June 3, 2024',
+      }),
+    );
+    expect(html).toContain('Expected delivery');
+    expect(html).toContain('Monday, June 3, 2024');
+  });
+
+  it('inlines accent color for brand highlights', async () => {
+    const html = await render(
+      OrderCreatedEmail({
+        ...baseOrder,
+        expectedDelivery: 'June 1, 2024',
+        accentColor: '#2563eb',
+      }),
+    );
+    expect(html).toContain('#2563eb');
+  });
+
+  it('inlines container radius for large preset', async () => {
+    const html = await render(
+      OrderCreatedEmail({
+        ...baseOrder,
+        expectedDelivery: 'June 1, 2024',
+        radius: 'large',
+      }),
+    );
+    expect(html).toMatch(/border-radius:\s*16px/i);
+  });
+
+  it('omits expected delivery block when showDelivery is false', async () => {
+    const html = await render(
+      OrderCreatedEmail({
+        ...baseOrder,
+        expectedDelivery: 'Monday, June 3, 2024',
+        showDelivery: false,
       }),
     );
     expect(html).not.toContain('Expected delivery');
+    expect(html).not.toContain('Monday, June 3, 2024');
   });
 
-  it('hides sign-off when show_sign_off is false', async () => {
+  it('omits Help Center sign-off when showSignOff is false', async () => {
     const html = await render(
       OrderCreatedEmail({
         ...baseOrder,
-        delivery_date: '2024-06-01',
-        show_sign_off: false,
+        expectedDelivery: 'June 1, 2024',
+        showSignOff: false,
       }),
     );
     expect(html).not.toContain('Help Center');
-  });
-
-  it('shows social links when urls are provided', async () => {
-    const html = await render(
-      OrderCreatedEmail({
-        ...baseOrder,
-        delivery_date: '2024-06-01',
-        twitter_url: 'https://x.com/acme',
-        instagram_url: 'https://instagram.com/acme',
-      }),
-    );
-    expect(html).toContain('https://x.com/acme');
-    expect(html).toContain('https://instagram.com/acme');
-  });
-
-  it('applies accent color', async () => {
-    const html = await render(
-      OrderCreatedEmail({
-        ...baseOrder,
-        delivery_date: '2024-06-01',
-        accent_color: '#ff0000',
-      }),
-    );
-    expect(html).toContain('#ff0000');
   });
 });
 
 describe('OrderConfirmedEmail', () => {
   it('renders without crashing', async () => {
     const html = await render(
-      OrderConfirmedEmail({ ...baseOrder, payment_method: 'Visa **** 4242' }),
+      OrderConfirmedEmail({
+        ...baseOrder,
+        paymentMethod: 'Visa **** 4242',
+      }),
     );
     expect(html).toBeTruthy();
   });
 
   it('includes payment method', async () => {
     const html = await render(
-      OrderConfirmedEmail({ ...baseOrder, payment_method: 'Visa **** 4242' }),
+      OrderConfirmedEmail({
+        ...baseOrder,
+        paymentMethod: 'Visa **** 4242',
+      }),
     );
     expect(html).toContain('Visa **** 4242');
   });
 
-  it('hides payment section when show_payment is false', async () => {
+  it('includes payment details section', async () => {
     const html = await render(
       OrderConfirmedEmail({
         ...baseOrder,
-        payment_method: 'Visa **** 4242',
-        show_payment: false,
+        paymentMethod: 'Visa **** 4242',
+      }),
+    );
+    expect(html).toContain('Payment details');
+  });
+
+  it('uses accent on payment amount when provided', async () => {
+    const html = await render(
+      OrderConfirmedEmail({
+        ...baseOrder,
+        paymentMethod: 'Visa **** 4242',
+        accentColor: '#16a34a',
+      }),
+    );
+    expect(html).toContain('#16a34a');
+  });
+
+  it('omits payment details when showPayment is false', async () => {
+    const html = await render(
+      OrderConfirmedEmail({
+        ...baseOrder,
+        paymentMethod: 'Visa **** 4242',
+        showPayment: false,
       }),
     );
     expect(html).not.toContain('Payment details');
+    expect(html).not.toContain('Visa **** 4242');
+  });
+
+  it('omits Help Center sign-off when showSignOff is false', async () => {
+    const html = await render(
+      OrderConfirmedEmail({
+        ...baseOrder,
+        paymentMethod: 'Visa **** 4242',
+        showSignOff: false,
+      }),
+    );
+    expect(html).not.toContain('Help Center');
   });
 });
 
 describe('OrderShippedEmail', () => {
   it('renders without crashing', async () => {
     const html = await render(
-      OrderShippedEmail({ ...baseOrder, tracking_number: 'TRK123456' }),
+      OrderShippedEmail({
+        ...baseOrder,
+        trackingNumber: 'TRK123456',
+      }),
     );
     expect(html).toBeTruthy();
   });
 
   it('includes tracking number', async () => {
     const html = await render(
-      OrderShippedEmail({ ...baseOrder, tracking_number: 'TRK123456' }),
+      OrderShippedEmail({
+        ...baseOrder,
+        trackingNumber: 'TRK123456',
+      }),
     );
     expect(html).toContain('TRK123456');
   });
@@ -137,7 +212,7 @@ describe('OrderShippedEmail', () => {
     const html = await render(
       OrderShippedEmail({
         ...baseOrder,
-        tracking_number: 'TRK123456',
+        trackingNumber: 'TRK123456',
         carrier: 'FedEx',
       }),
     );
@@ -148,36 +223,75 @@ describe('OrderShippedEmail', () => {
     const html = await render(
       OrderShippedEmail({
         ...baseOrder,
-        tracking_number: 'TRK123456',
-        tracking_url: 'https://track.fedex.com/TRK123456',
+        trackingNumber: 'TRK123456',
+        trackingUrl: 'https://track.fedex.com/TRK123456',
       }),
     );
     expect(html).toContain('https://track.fedex.com/TRK123456');
   });
 
-  it('hides tracking section when show_tracking is false', async () => {
+  it('includes shipping information section', async () => {
     const html = await render(
       OrderShippedEmail({
         ...baseOrder,
-        tracking_number: 'TRK123456',
-        show_tracking: false,
+        trackingNumber: 'TRK123456',
+      }),
+    );
+    expect(html).toContain('Shipping information');
+  });
+
+  it('styles track button with accent', async () => {
+    const html = await render(
+      OrderShippedEmail({
+        ...baseOrder,
+        trackingNumber: 'TRK123456',
+        accentColor: '#dc2626',
+      }),
+    );
+    expect(html).toContain('#dc2626');
+  });
+
+  it('omits shipping / tracking block when showTracking is false', async () => {
+    const html = await render(
+      OrderShippedEmail({
+        ...baseOrder,
+        trackingNumber: 'TRK123456',
+        showTracking: false,
       }),
     );
     expect(html).not.toContain('Shipping information');
+    expect(html).not.toContain('TRK123456');
+  });
+
+  it('omits Help Center sign-off when showSignOff is false', async () => {
+    const html = await render(
+      OrderShippedEmail({
+        ...baseOrder,
+        trackingNumber: 'TRK123456',
+        showSignOff: false,
+      }),
+    );
+    expect(html).not.toContain('Help Center');
   });
 });
 
 describe('OrderDeliveredEmail', () => {
   it('renders without crashing', async () => {
     const html = await render(
-      OrderDeliveredEmail({ ...baseOrder, delivered_date: '2024-06-05' }),
+      OrderDeliveredEmail({
+        ...baseOrder,
+        deliveredOn: 'June 5, 2024',
+      }),
     );
     expect(html).toBeTruthy();
   });
 
   it('includes delivered date', async () => {
     const html = await render(
-      OrderDeliveredEmail({ ...baseOrder, delivered_date: '2024-06-05' }),
+      OrderDeliveredEmail({
+        ...baseOrder,
+        deliveredOn: 'June 5, 2024',
+      }),
     );
     expect(html).toContain('June 5, 2024');
   });
@@ -186,33 +300,81 @@ describe('OrderDeliveredEmail', () => {
     const html = await render(
       OrderDeliveredEmail({
         ...baseOrder,
-        delivered_date: '2024-06-05',
-        review_url: 'https://acme.com/review',
+        deliveredOn: 'June 5, 2024',
+        reviewUrl: 'https://acme.com/review',
       }),
     );
     expect(html).toContain('https://acme.com/review');
   });
 
-  it('hides review section when show_review is false', async () => {
+  it('includes review CTA copy', async () => {
     const html = await render(
       OrderDeliveredEmail({
         ...baseOrder,
-        delivered_date: '2024-06-05',
-        review_url: 'https://acme.com/review',
-        show_review: false,
+        deliveredOn: 'June 5, 2024',
+        reviewUrl: 'https://acme.com/review',
       }),
     );
-    expect(html).not.toContain('Leave a review');
+    expect(html).toContain('Leave a review');
   });
 
   it('includes delivery note when provided', async () => {
     const html = await render(
       OrderDeliveredEmail({
         ...baseOrder,
-        delivered_date: '2024-06-05',
-        delivery_note: 'Left at front door',
+        deliveredOn: 'June 5, 2024',
+        deliveryNote: 'Left at front door',
       }),
     );
     expect(html).toContain('Left at front door');
+  });
+
+  it('uses accent on review CTA block when provided', async () => {
+    const html = await render(
+      OrderDeliveredEmail({
+        ...baseOrder,
+        deliveredOn: 'June 5, 2024',
+        accentColor: '#7c3aed',
+      }),
+    );
+    expect(html).toContain('#7c3aed');
+  });
+
+  it('omits delivery confirmation when showDelivery is false', async () => {
+    const html = await render(
+      OrderDeliveredEmail({
+        ...baseOrder,
+        deliveredOn: 'June 5, 2024',
+        deliveryNote: 'Left at front door',
+        showDelivery: false,
+      }),
+    );
+    expect(html).not.toContain('Delivery confirmation');
+    expect(html).not.toContain('June 5, 2024');
+    expect(html).not.toContain('Left at front door');
+  });
+
+  it('omits review block when showReview is false', async () => {
+    const html = await render(
+      OrderDeliveredEmail({
+        ...baseOrder,
+        deliveredOn: 'June 5, 2024',
+        reviewUrl: 'https://acme.com/review',
+        showReview: false,
+      }),
+    );
+    expect(html).not.toContain('Leave a review');
+    expect(html).not.toContain('Enjoying your purchase?');
+  });
+
+  it('omits Help Center sign-off when showSignOff is false', async () => {
+    const html = await render(
+      OrderDeliveredEmail({
+        ...baseOrder,
+        deliveredOn: 'June 5, 2024',
+        showSignOff: false,
+      }),
+    );
+    expect(html).not.toContain('Help Center');
   });
 });

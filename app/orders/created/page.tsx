@@ -10,7 +10,7 @@ import {
   TextField,
   Tooltip,
 } from '@radix-ui/themes';
-import { Calendar, Copy, SendHorizontal, ShoppingCart } from 'lucide-react';
+import { Copy, SendHorizontal, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { type CSSProperties, useState } from 'react';
@@ -31,7 +31,6 @@ type Design = {
   radius: Radius;
   showDelivery: boolean;
   showSignOff: boolean;
-  showSocialLinks: boolean;
 };
 
 const previewRadius = {
@@ -52,8 +51,6 @@ const variablesSchema = z.object({
   company_name: z.string().min(1, 'Required'),
   help_center_url: optionalUrl,
   unsubscribe_url: optionalUrl,
-  twitter_url: optionalUrl,
-  instagram_url: optionalUrl,
   customer_name: z.string().min(1, 'Required'),
   delivery_date: z.string().min(1, 'Required'),
   order_id: z.string().min(1, 'Required'),
@@ -84,7 +81,6 @@ export default function CreatedOrder() {
     radius: 'medium',
     showDelivery: true,
     showSignOff: true,
-    showSocialLinks: true,
   });
 
   const variables = watch();
@@ -109,8 +105,6 @@ export default function CreatedOrder() {
     order_image: variables.order_image || '',
     unsubscribe_url: variables.unsubscribe_url || '#',
     help_center_url: variables.help_center_url || 'https://example.com/help',
-    twitter_url: variables.twitter_url || '',
-    instagram_url: variables.instagram_url || '',
   };
 
   function ph(field: { text: string; isPlaceholder: boolean }, className = '') {
@@ -126,14 +120,31 @@ export default function CreatedOrder() {
   }
 
   function buildPayload(data: Variables) {
+    const price =
+      parseFloat(data.order_single_price || '0') *
+      parseInt(data.order_quantity || '0', 10);
     return {
-      ...data,
-      order_price: computeTotal(data.order_quantity, data.order_single_price),
-      accent_color: design.accentHex,
+      to_email: data.to_email,
+      companyName: data.company_name,
+      customerName: data.customer_name,
+      orderNumber: data.order_id,
+      expectedDelivery: formatDate(data.delivery_date),
+      items: [
+        {
+          name: data.order_name,
+          quantity: parseInt(data.order_quantity || '0', 10),
+          price: parseFloat(data.order_single_price || '0'),
+          image: data.order_image || 'https://placehold.co/64x64',
+        },
+      ],
+      subtotal: price,
+      total: price,
+      helpCenterUrl: data.help_center_url || 'https://example.com/help',
+      unsubscribeUrl: data.unsubscribe_url || '#',
+      accentColor: design.accentHex,
       radius: design.radius,
-      show_delivery: design.showDelivery,
-      show_sign_off: design.showSignOff,
-      show_social_links: design.showSocialLinks,
+      showDelivery: design.showDelivery,
+      showSignOff: design.showSignOff,
     };
   }
 
@@ -376,18 +387,23 @@ export default function CreatedOrder() {
 
         <div className="flex-1 bg-(--gray-2) overflow-auto flex items-start justify-center py-8 px-6">
           <div
-            className={`w-full max-w-xl bg-white shadow-sm overflow-hidden font-sans text-sm text-zinc-800 ${previewRadius[design.radius]}`}
+            className={`w-full max-w-xl bg-white border border-zinc-200 shadow-sm overflow-hidden font-sans text-sm text-zinc-800 ${previewRadius[design.radius]}`}
           >
-            <div className="h-1 bg-(--accent)" />
-
+            <div
+              className="h-1 w-full shrink-0"
+              style={{ backgroundColor: design.accentHex }}
+            />
             <div className="px-12 pt-10 pb-8 text-center border-b border-zinc-100">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-5 bg-(--accent)">
-                <ShoppingCart size={20} stroke="white" strokeWidth={2} />
-              </div>
-              <h1 className="text-2xl font-bold mb-2 tracking-tight text-(--accent)">
+              <p className="text-[11px] leading-6 font-semibold text-zinc-400 tracking-[0.15em] uppercase m-0 mb-3">
+                {ph(v.company_name)}
+              </p>
+              <h1
+                className="text-2xl font-bold mb-2 tracking-tight"
+                style={{ color: design.accentHex }}
+              >
                 Order created
               </h1>
-              <p className="text-zinc-400 text-xs tracking-widest uppercase font-medium">
+              <p className="text-zinc-400 text-xs tracking-[0.1em] uppercase font-medium">
                 Order #{ph(v.order_id)}
               </p>
             </div>
@@ -403,20 +419,15 @@ export default function CreatedOrder() {
 
               {design.showDelivery && (
                 <div
-                  className={`flex items-start gap-3 bg-zinc-50 border border-zinc-100 px-5 py-4 mb-8 ${previewInnerRadius[design.radius]}`}
+                  className={`bg-zinc-50 border border-zinc-100 px-5 py-4 mb-8 ${previewInnerRadius[design.radius]}`}
+                  style={{ borderLeft: `3px solid ${design.accentHex}` }}
                 >
-                  <Calendar
-                    size={16}
-                    className="mt-0.5 shrink-0 text-zinc-500"
-                  />
-                  <div>
-                    <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-0.5">
-                      Expected delivery
-                    </p>
-                    <p className="text-zinc-800 font-medium">
-                      {ph(v.delivery_date)}
-                    </p>
-                  </div>
+                  <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-0.5">
+                    Expected delivery
+                  </p>
+                  <p className="text-zinc-800 font-medium">
+                    {ph(v.delivery_date)}
+                  </p>
                 </div>
               )}
 
@@ -458,9 +469,14 @@ export default function CreatedOrder() {
                   <span>Subtotal</span>
                   <span className="tabular-nums">{ph(v.order_price)}</span>
                 </div>
-                <div className="flex justify-between font-semibold text-zinc-900 text-base pt-2 border-t border-zinc-100">
-                  <span>Total</span>
-                  <span className="tabular-nums">{ph(v.order_price)}</span>
+                <div className="flex justify-between font-semibold text-base pt-2 border-t border-zinc-100">
+                  <span style={{ color: design.accentHex }}>Total</span>
+                  <span
+                    className="tabular-nums"
+                    style={{ color: design.accentHex }}
+                  >
+                    {ph(v.order_price)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -471,7 +487,8 @@ export default function CreatedOrder() {
                   Questions about your order? Reply to this email or visit our{' '}
                   <a
                     href={v.help_center_url}
-                    className="underline underline-offset-2 text-(--accent)"
+                    className="no-underline font-medium"
+                    style={{ color: design.accentHex }}
                   >
                     Help Center
                   </a>
@@ -483,39 +500,17 @@ export default function CreatedOrder() {
               </div>
             )}
 
-            <div className="bg-zinc-50 border-t border-zinc-100 px-12 py-6 flex items-center justify-between gap-4">
-              <p className="text-xs text-zinc-400 leading-relaxed">
+            <div className="bg-zinc-50 border-t border-zinc-100 px-12 py-6">
+              <p className="text-xs text-zinc-400 leading-relaxed m-0">
                 You received this email because you placed an order.{' '}
                 <a
                   href={v.unsubscribe_url}
-                  className="underline underline-offset-2 text-(--accent)"
+                  className="no-underline font-medium"
+                  style={{ color: design.accentHex }}
                 >
                   Unsubscribe
                 </a>
               </p>
-              {design.showSocialLinks && (
-                <div className="flex gap-2 shrink-0">
-                  <a
-                    href={v.twitter_url || '#'}
-                    aria-label="Twitter"
-                    className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors text-[13px] text-zinc-400"
-                  >
-                    𝕏
-                  </a>
-                  <a
-                    href={v.instagram_url || '#'}
-                    aria-label="Instagram"
-                    className="w-7 h-7 rounded-full border border-zinc-200 flex items-center justify-center hover:border-zinc-400 transition-colors"
-                  >
-                    <Image
-                      src="/instagram.png"
-                      alt="Instagram"
-                      width={16}
-                      height={16}
-                    />
-                  </a>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -534,11 +529,6 @@ export default function CreatedOrder() {
               label: 'Sign-off',
               key: 'showSignOff',
               value: design.showSignOff,
-            },
-            {
-              label: 'Social links',
-              key: 'showSocialLinks',
-              value: design.showSocialLinks,
             },
           ]}
           onAccentChange={(color, hex) =>

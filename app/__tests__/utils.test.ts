@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { resolveEmailAccentColor, resolveEmailRadius } from '@/app/lib/utils';
 
 function computeTotal(
   qty: string | undefined,
@@ -74,5 +75,39 @@ describe('formatDate', () => {
 
   it('formats december correctly', () => {
     expect(formatDate('2024-12-25')).toBe('December 25, 2024');
+  });
+});
+
+describe('resolveEmailAccentColor', () => {
+  it('returns lowercase hex for valid #RRGGBB', () => {
+    expect(resolveEmailAccentColor('#2563EB')).toBe('#2563eb');
+  });
+
+  it('expands 3-digit hex to match browser shorthand', () => {
+    expect(resolveEmailAccentColor('#fff')).toBe('#ffffff');
+    expect(resolveEmailAccentColor('#f00')).toBe('#ff0000');
+    expect(resolveEmailAccentColor('#aBc')).toBe('#aabbcc');
+  });
+
+  it('accepts bare 6-digit hex without hash', () => {
+    expect(resolveEmailAccentColor('14b8a6')).toBe('#14b8a6');
+  });
+
+  it('falls back to default for invalid input', () => {
+    expect(resolveEmailAccentColor('not-a-color')).toBe('#18181b');
+    expect(resolveEmailAccentColor('#ff')).toBe('#18181b');
+    expect(resolveEmailAccentColor(undefined)).toBe('#18181b');
+  });
+});
+
+describe('resolveEmailRadius', () => {
+  it('accepts valid presets', () => {
+    expect(resolveEmailRadius('sharp')).toBe('sharp');
+    expect(resolveEmailRadius('large')).toBe('large');
+  });
+
+  it('defaults to medium for unknown values', () => {
+    expect(resolveEmailRadius(undefined)).toBe('medium');
+    expect(resolveEmailRadius('xl')).toBe('medium');
   });
 });

@@ -11,6 +11,10 @@ import { env } from '@/env';
 const app = new Hono().basePath('/api');
 const resend = new Resend(env.RESEND_API_KEY);
 
+function orderRef(body: { orderNumber?: string; order_id?: string }) {
+  return body.orderNumber ?? body.order_id ?? '';
+}
+
 app.post('/orders/created/html', async (c) => {
   const body = await c.req.json();
   const html = await render(OrderCreatedEmail(body));
@@ -25,7 +29,7 @@ app.post('/orders/created/send', async (c) => {
   const { data, error } = await resend.emails.send({
     from: 'onboarding@resend.dev',
     to: body.to_email || 'anna.maria.dev.br@gmail.com',
-    subject: `Order ${body.order_id} confirmed`,
+    subject: `Order ${orderRef(body)} created`,
     html,
   });
 
@@ -48,7 +52,7 @@ app.post('/orders/confirmed/send', async (c) => {
   const { data, error } = await resend.emails.send({
     from: 'onboarding@resend.dev',
     to: body.to_email || 'anna.maria.dev.br@gmail.com',
-    subject: `Payment confirmed for order ${body.order_id}`,
+    subject: `Payment confirmed for order ${orderRef(body)}`,
     html,
   });
   if (error) return c.json({ error }, 400);
@@ -67,7 +71,7 @@ app.post('/orders/shipped/send', async (c) => {
   const { data, error } = await resend.emails.send({
     from: 'onboarding@resend.dev',
     to: body.to_email || 'anna.maria.dev.br@gmail.com',
-    subject: `Your order ${body.order_id} has been shipped`,
+    subject: `Your order ${orderRef(body)} has been shipped`,
     html,
   });
   if (error) return c.json({ error }, 400);
@@ -86,7 +90,7 @@ app.post('/orders/delivered/send', async (c) => {
   const { data, error } = await resend.emails.send({
     from: 'onboarding@resend.dev',
     to: body.to_email || 'anna.maria.dev.br@gmail.com',
-    subject: `Your order ${body.order_id} has been delivered`,
+    subject: `Your order ${orderRef(body)} has been delivered`,
     html,
   });
   if (error) return c.json({ error }, 400);
